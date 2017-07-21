@@ -19,5 +19,11 @@ SECTIONS {
 	.romend: {
 		*(romend)
 	} > romend
+
+	.bss (NOLOAD): {
+		__bss_start = .;
+		*(BSS)
+		__bss_end = ALIGN(2);
+	} > ram
 }
 
