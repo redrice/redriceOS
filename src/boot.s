@@ -7,7 +7,13 @@ entry_rom:
 	dc.w		$0000
 	dc.l		$fc0008
 
-	movea.l		#$00000400,sp	; set stack pointer
+	move		#$2700,sr	; supervisor mode
+
+	reset
+
+	movea.l		#$00001000,sp	; set stack pointer
+
+	; do memory init first, before going to C code
 
 	jsr		_main		; jump into C kernel code
 
