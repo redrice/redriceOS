@@ -1,0 +1,14 @@
+-cc=vbccm68k -quiet %s -o= %s %s -O=%ld 
+-ccv=vbccm68k %s -o= %s %s -O=%ld 
+-as=vasmm68k_mot -quiet -phxass -Fvobj -opt-fconst -nowarn=62 %s -o %s
+-asv=vasmm68k_mot -Fvobj -phxass -opt-fconst -nowarn=62 %s -o %s
+-rm=rm %s
+-rmv=rm %s
+#-ld=vlink -bamigahunk -x -Bstatic -Cvbcc -nostdlib vlibos3:startup.o %s %s -Lvlibos3: -lvc -o %s
+#-l2=vlink -bamigahunk -x -Bstatic -Cvbcc -nostdlib %s %s -Lvlibos3: -o %s
+#-ldv=vlink -bamigahunk -t -x -Bstatic -Cvbcc -nostdlib vlibos3:startup.o %s %s -Lvlibos3: -lvc -o %s
+#-l2v=vlink -bamigahunk -t -x -Bstatic -Cvbcc -nostdlib %s %s -Lvlibos3: -o %s
+#-ldnodb=-s -Rshort
+-ul=-l%s
+-cf=-F%s
+-ml=500
