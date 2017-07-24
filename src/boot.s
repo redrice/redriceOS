@@ -11,9 +11,9 @@ entry_rom:
 
 	reset
 
-	movea.l		#$00001000,sp	; set stack pointer
+	move.b		#$A,$ff8001	; hard code memory ctrl to 4MB
 
-	; do memory init first, before going to C code
+	movea.l		#$00001000,sp	; set stack pointer
 
 	jsr		_main		; jump into C kernel code
 
