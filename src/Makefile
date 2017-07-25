@@ -1,7 +1,7 @@
 AS=vasmm68k_mot
 CC=vc
 LD=vlink
-CFLAGS=+redriceos -c99
+CFLAGS=+redriceos -c99 -Ilibc/
 ASFLAGS=-Fvobj -m68000
 LDSCRIPT=rom-atarist.ld
 LDFLAGS=-brawbin1 -M -T $(LDSCRIPT)
