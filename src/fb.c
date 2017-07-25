@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "console_font.h"
 
 // Shifter info
@@ -7,22 +9,22 @@
 
 #define shifter_base (0xffff8200)
 struct shifter_regs {
-	char __padd0;
-	char addr_hi;
-	char __padd1;
-	char addr_md;
-	char __padd2;
-	char counter_hi;
-	char __padd3;
-	char counter_md;
-	char __padd4;
-	char counter_lo;
-	short sync;
-	char __padd5;
-	char addr_lo;
-	char __padd6[2+3*16];
-	unsigned short colors[SHIFTER_PALETTE_SIZE];
-	unsigned char mode;
+	uint8_t __padd0;
+	uint8_t addr_hi;
+	uint8_t __padd1;
+	uint8_t addr_md;
+	uint8_t __padd2;
+	uint8_t counter_hi;
+	uint8_t __padd3;
+	uint8_t counter_md;
+	uint8_t __padd4;
+	uint8_t counter_lo;
+	int16_t sync;
+	uint8_t __padd5;
+	uint8_t addr_lo;
+	uint8_t __padd6[2+3*16];
+	uint16_t colors[SHIFTER_PALETTE_SIZE];
+	uint8_t mode;
 };
 #define shifter (*(volatile struct shifter_regs *)(shifter_base))
 
@@ -33,10 +35,10 @@ enum SHIFTER_MODES {
 };
 
 struct shifter_mode {
-	unsigned int width;
-	unsigned int height;
-	unsigned int bit_planes;
-	unsigned int stride;
+	uint32_t width;
+	uint32_t height;
+	uint32_t bit_planes;
+	uint32_t stride;
 };
 
 static struct shifter_mode shifter_modes[] = {
@@ -63,7 +65,7 @@ static struct shifter_mode shifter_modes[] = {
 
 // Framebuffer info
 
-static unsigned short framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
+static uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
 	0x000, // black
 	0x777, // white - only for debugging
 	//0x400, // red
@@ -85,11 +87,11 @@ static unsigned short framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
 };
 
 struct framebuffer_dev {
-	char *framebuffer;
+	uint8_t *framebuffer;
 };
 
 static struct framebuffer_dev fb_dev = {
-	.framebuffer = (char*)0x300000, // TODO: alloc?
+	.framebuffer = (uint8_t*)0x300000, // TODO: alloc?
 };
 
 void
@@ -109,11 +111,11 @@ fb_init()
 }
 
 void
-fb_putc(const char c, const int x, const int y)
+fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 {
 	/* TODO: write a blitter */
-	const unsigned char *glyph = font8x8_basic[c];
-	const int font_height = 8;
+	const uint8_t *glyph = font8x8_basic[c];
+	const uint8_t font_height = 8;
 	//int screen_width = 320/2; // bytes per line
 
 	struct shifter_mode *current_mode = &shifter_modes[0];
@@ -126,9 +128,9 @@ fb_putc(const char c, const int x, const int y)
 
 	/* TODO: reduce the amount of calculations */
 	for (int i = 0; i < font_height; i++) {
-		unsigned char glyph_line = glyph[i];
-		unsigned int index = (i + y * font_height) * current_mode->stride + offset_x + byte_offset;
-		unsigned char mirrored_glyph_line = 0;
+		uint8_t glyph_line = glyph[i];
+		uint32_t index = (i + y * font_height) * current_mode->stride + offset_x + byte_offset;
+		uint8_t mirrored_glyph_line = 0;
 
 		mirrored_glyph_line |= ((glyph_line & 1) << 7);
 		mirrored_glyph_line |= ((glyph_line >> 1) & 1) << 6;
