@@ -13,7 +13,8 @@ entry_rom:
 
 	move.b		#$A,$ff8001	; hard code memory ctrl to 4MB
 
-	movea.l		#$00001000,sp	; set stack pointer
+	movea.l		#$400000,sp	; set stack pointer to the end of RAM
+					; XXX: hard coded to 4MB
 
 	jsr		_main		; jump into C kernel code
 
