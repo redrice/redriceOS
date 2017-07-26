@@ -11,6 +11,9 @@ console_init(struct console_dev *dev)
 
 
 /* TODO: Currently no checks for max x and max y; no scrolling etc */
+/* XXX: I think console_print needs to be independent of underlying terminal 
+ * implementation, i.e. any changes to dev->cur... needs to happen in an
+ * intermediate layer. */
 void
 console_print(struct console_dev *dev, const char *string)
 {
