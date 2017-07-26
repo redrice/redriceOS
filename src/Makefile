@@ -6,7 +6,7 @@ ASFLAGS=-Fvobj -m68000
 LDSCRIPT=rom-atarist.ld
 LDFLAGS=-brawbin1 -M -T $(LDSCRIPT)
 
-OBJS=boot.o kernel.o fb.o console.o
+OBJS=boot.o kernel.o fb.o console.o libc/doprintf.o libc/divmod.o
 #AS_INCS=hw-atarist.i
 ROM_IMAGE=redriceos-atarist.img
 
