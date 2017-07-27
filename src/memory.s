@@ -15,7 +15,11 @@
 ; option any later version.
 ;
 	xref memory_configured
+	xref _bzero
+	xref __bss_start
+	xref __bss_len
 	global memory_init
+	global bss_clear
 
 	code
 
@@ -107,6 +111,16 @@ check_test_pattern_loop:
 	bne	check_test_pattern_loop
 end_check_test_pattern:
 	jmp	(a5)
+
+bss_clear:
+	move.l	#__bss_start,d0
+	move.l	#__bss_len,d1
+;.1:
+;	nop
+;	jmp .1
+	jsr	_bzero
+
+	rts
 
 ; vim: set ft=asm68k:
 

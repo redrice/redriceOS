@@ -1,5 +1,6 @@
 	xref		_main
 	xref		memory_init
+	xref		bss_clear
 	global		memory_configured
 
 	code
@@ -22,6 +23,8 @@ entry_rom:
 memory_configured:
 
 	movea.l		_phystop,sp	; set stack pointer to the end of RAM
+
+	jsr		bss_clear	; zero out bss
 
 	jsr		_main		; jump into C kernel code
 

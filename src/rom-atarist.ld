@@ -27,5 +27,7 @@ SECTIONS {
 		*(BSS)
 		__bss_end = ALIGN(2);
 	} > ram
+
+	__bss_len = __bss_end - __bss_start;
 }
 
