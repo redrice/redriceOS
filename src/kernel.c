@@ -37,6 +37,7 @@ naive_itoa(unsigned char val, char *buffer)
 	} while (++div_index < sizeof(divisors)/sizeof(unsigned char));
 }
 
+#pragma dontwarn 121
 void
 main(void)
 {
