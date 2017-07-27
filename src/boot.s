@@ -1,4 +1,6 @@
 	xref		_main
+	xref		memory_init
+	global		memory_configured
 
 	code
 
@@ -7,19 +9,18 @@ entry_rom:
 	dc.w		$0000
 	dc.l		$fc0008
 
+.1:
 	move		#$2700,sr	; supervisor mode
 
 	reset
 
-	move.b		#$A,$ff8001	; hard code memory ctrl to 4MB
+	jmp		memory_init
+memory_configured:
 
 	movea.l		#$400000,sp	; set stack pointer to the end of RAM
 					; XXX: hard coded to 4MB
 
 	jsr		_main		; jump into C kernel code
-
-.1	nop
-	jmp		.1
 
 
 	section		"romend",code
