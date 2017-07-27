@@ -79,6 +79,20 @@ bank_test_end:
 
 	move.b	d6,$ff8001
 
+mem_sanity_check:
+	move.l	#$ff0055aa,d0
+mem_sanity_loop:
+	move.l	d5,a0
+	subq.l	#4,a0
+	move.l	d0,(a0)
+	cmp.l	(a0),d0
+	beq	mem_sanity_done
+	lsr.l	#1,d5
+	bra	mem_sanity_loop
+mem_sanity_done:
+
+	move.l  d5,_phystop	; save in phystop variable, kernel.c
+
 	jmp memory_configured
 
 check_test_pattern:

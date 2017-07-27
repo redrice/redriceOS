@@ -1,7 +1,7 @@
 #include "fb.h"
 #include "console.h"
 
-int a;
+uint32_t phystop;
 
 #pragma align(256)
 static char *framebuffer[320];
@@ -41,10 +41,8 @@ naive_itoa(unsigned char val, char *buffer)
 void
 main(void)
 {
-	const int b = 2;
 	struct console_dev con;
 	char itoa_buffer[] = "   ";
-	a = b;
 
 	// initialize framebuffer and console
 	fb_init();

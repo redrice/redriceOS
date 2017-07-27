@@ -14,14 +14,16 @@ entry_rom:
 
 	reset
 
+	movea.l		#$020000,sp	; temporary stack location at the end
+					; of first 128kiB block, should work
+					; no matter the physical mem config
+
 	jmp		memory_init
 memory_configured:
 
-	movea.l		#$400000,sp	; set stack pointer to the end of RAM
-					; XXX: hard coded to 4MB
+	movea.l		_phystop,sp	; set stack pointer to the end of RAM
 
 	jsr		_main		; jump into C kernel code
-
 
 	section		"romend",code
 
