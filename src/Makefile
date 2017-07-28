@@ -3,12 +3,11 @@ CC=vc
 LD=vlink
 CFLAGS=+redriceos -c99 -Ilibc/
 ASFLAGS=-Fvobj -m68000
-LDSCRIPT=rom-atarist.ld
+LDSCRIPT=cart-atarist.ld # use rom-atarist.ld if you want to build ROM image
 LDFLAGS=-brawbin1 -M -T $(LDSCRIPT)
 
 OBJS=boot.o kernel.o fb.o console.o memory.o libc/doprintf.o libc/divmod.o
-#AS_INCS=hw-atarist.i
-ROM_IMAGE=redriceos-atarist.img
+ROM_IMAGE=redriceos.img
 
 all: $(ROM_IMAGE)
 

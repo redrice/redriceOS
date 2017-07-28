@@ -2,14 +2,23 @@
 	xref		memory_init
 	global		memory_configured
 
+CART equ 1				; we are building a cart image
+
 	code
 
 entry_rom:
+	IF CART
+
+	dc.l		$fa52235f
+
+	ELSE
+
 	bra.s		.1
 	dc.w		$0000
 	dc.l		$fc0008
-
 .1:
+	ENDIF
+
 	move		#$2700,sr	; supervisor mode
 
 	reset
