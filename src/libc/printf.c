@@ -1,5 +1,6 @@
-/* lifted from EmuTOS */
 /*
+ * Some parts lifted from EmuTOS.
+ *
  * doprintf adapted from ACK doprnt.c   1.1 as found in Minix 1.5
  * Unless otherwise stated, the MINIX BSD-ish license applies.
  *
@@ -7,7 +8,8 @@
  */
 
 #include <stdarg.h>
-//#include "doprintf.h"
+#include <stdio.h>
+#include "con.h"
 
 static char *
 itoa(char *p, unsigned int num, int radix, char first_hex_letter)
@@ -60,7 +62,7 @@ ltoa(char *p, unsigned long num, int radix, char first_hex_letter)
 }
 
 int
-doprintf(void (*outc)(int), const char *fmt, va_list ap)
+doprintf(void (*outc)(uint8_t), const char *fmt, va_list ap)
 {
 	char buf[128];
 	char *p;
@@ -229,3 +231,21 @@ oxu:
 		}
 	}
 }
+
+int
+vprintf(const char *fmt, va_list ap)
+{
+	return doprintf(con_putc, fmt, ap);
+}
+
+int
+printf(const char *fmt, ...)
+{
+	int n;
+	va_list ap;
+	va_start(ap, fmt);
+	n = vprintf(fmt, ap);
+	va_end(ap);
+	return n;
+}
+

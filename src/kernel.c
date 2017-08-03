@@ -1,5 +1,8 @@
+#include <stdio.h>
+
 #include "fb.h"
-#include "console.h"
+#include "fbterm.h"
+#include "con.h"
 
 uint32_t phystop;
 
@@ -41,18 +44,10 @@ naive_itoa(unsigned char val, char *buffer)
 void
 main(void)
 {
-	struct console_dev con;
-	char itoa_buffer[] = "   ";
+	con_init();
 
-	// initialize framebuffer and console
-	fb_init();
-	console_init(&con);
-
-	console_print(&con, "redriceOS booting...\n");
-
-	naive_itoa((int)framebuffer & 0xFF, itoa_buffer);
-	console_print(&con, "framebuffer alignment: ");
-	console_print(&con, itoa_buffer);
+	printf("redriceOS booting...\n");
+	printf("framebuffer alignment: %x\n", (int)framebuffer & 0xFF);
 
 	while (1) {}
 }

@@ -1,12 +1,12 @@
 AS=vasmm68k_mot
 CC=vc
 LD=vlink
-CFLAGS=+redriceos -c99 -Ilibc/
+CFLAGS=+redriceos -c99 -Ilibc/ -I.
 ASFLAGS=-Fvobj -m68000
 LDSCRIPT=cart-atarist.ld # use rom-atarist.ld if you want to build ROM image
-LDFLAGS=-brawbin1 -M -T $(LDSCRIPT)
+LDFLAGS=-brawbin1 -T $(LDSCRIPT) # -M
 
-OBJS=boot.o kernel.o fb.o console.o memory.o libc/doprintf.o libc/divmod.o libc/strings_asm.o
+OBJS=boot.o kernel.o con.o fb.o fbterm.o memory.o libc/printf.o libc/divmod.o libc/strings_asm.o
 ROM_IMAGE=redriceos.img
 
 all: $(ROM_IMAGE)
