@@ -115,9 +115,6 @@ end_check_test_pattern:
 bss_clear:
 	move.l	#__bss_start,d0
 	move.l	#__bss_len,d1
-;.1:
-;	nop
-;	jmp .1
 	jsr	_bzero
 
 	rts
