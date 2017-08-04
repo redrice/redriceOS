@@ -32,11 +32,11 @@ entry_rom:
 memory_configured:
 
 	movea.l		_phystop,sp	; set stack pointer to the end of RAM
-	movea.l		_phystop,d6	; save phystop in d6, survive bss_clear
+	move.l		_phystop,d6	; save phystop in d6, survive bss_clear
 
 	jsr		bss_clear	; zero out bss
 
-	movea.l		d6,_phystop	; restore phystop value
+	move.l		d6,_phystop	; restore phystop value
 
 	jsr		_main		; jump into C kernel code
 
