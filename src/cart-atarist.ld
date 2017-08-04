@@ -1,6 +1,7 @@
 MEMORY {
 	vectorsram: org=0x0, len=0x400
-	ram: org=0x400, len=0x3FFC00
+	fbram: org=0x400, len=0x8000
+	ram: org=0x8400, len=0x3F7C00 /* up to 4MB */
 
 	rom: org=0xFA0000, len=0x1FFFE
 	romend: org=0xFBFFFE, len=0x2
@@ -21,6 +22,10 @@ SECTIONS {
 	.romend: {
 		*(romend)
 	} > romend
+
+	.fbram (NOLOAD): {
+		*(fbram)
+	} > fbram
 
 	.bss (NOLOAD): {
 		__bss_start = .;

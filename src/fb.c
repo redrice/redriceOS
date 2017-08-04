@@ -90,13 +90,14 @@ struct framebuffer_dev {
 	uint8_t *framebuffer;
 };
 
-static struct framebuffer_dev fb_dev = {
-	.framebuffer = (uint8_t*)0x300000, // TODO: alloc?
-};
+struct framebuffer_dev fb_dev;
+
+__section("fbram") uint8_t fbram[32768];
 
 void
 fb_init()
 {
+	fb_dev.framebuffer = fbram;
 	shifter.mode = SHIFTER_MODE_320x200x4;
 	//shifter.mode = SHIFTER_MODE_640x400x1;
 
