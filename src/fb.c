@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <strings.h>
 
 #include "console_font.h"
 
@@ -92,16 +93,15 @@ struct framebuffer_dev {
 
 struct framebuffer_dev fb_dev;
 
-__section("fbram") uint8_t fbram[32768];
+__section("fbram") uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
 
 void
 fb_init()
 {
 	fb_dev.framebuffer = fbram;
-	shifter.mode = SHIFTER_MODE_320x200x4;
-	//shifter.mode = SHIFTER_MODE_640x400x1;
 
-	/* TODO: allocate framebuffer */
+	shifter.mode = SHIFTER_MODE_640x400x1;
+
 	shifter.addr_hi = ((int)fb_dev.framebuffer >> 16);
 	shifter.addr_md = ((int)fb_dev.framebuffer >> 8);
 
@@ -109,6 +109,12 @@ fb_init()
 		shifter.colors[i] = framebuffer_palette[i];
 	}
 	
+}
+
+void
+fb_bzero()
+{
+	bzero(fb_dev.framebuffer, SHIFTER_FRAMEBUFFER_SIZE);
 }
 
 void
@@ -121,7 +127,8 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 
 	struct shifter_mode *current_mode = &shifter_modes[0];
 	
-	int bit_plane_width = 2;
+//	int bit_plane_width = 2;
+	int bit_plane_width = 1;
 	int offset = x >> 1; //  planes
 	int byte_offset = x & 0x1; // mod 4
 

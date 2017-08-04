@@ -8,6 +8,8 @@ fbterm_init()
 {
 	fbt.curx = 0;
 	fbt.cury = 0;
+
+	fb_bzero();
 }
 
 
