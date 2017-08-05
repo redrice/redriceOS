@@ -1,5 +1,6 @@
 MEMORY {
 	vectorsram: org=0x0, len=0x400
+	/* XXX: addresses below 0x800 are only accessible in supervisor mode */
 	fbram: org=0x400, len=0x8000
 	ram: org=0x8400, len=0x3F7C00 /* up to 4MB */
 
