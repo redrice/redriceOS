@@ -3,22 +3,13 @@
 	xref		bss_clear
 	global		memory_configured
 
-CART equ 1				; we are building a cart image
+CARTMAGIC equ $fa52235f
 
 	code
 
 entry_rom:
-	IF CART
 
-	dc.l		$fa52235f
-
-	ELSE
-
-	bra.s		.1
-	dc.w		$0000
-	dc.l		$fc0008
-.1:
-	ENDIF
+	dc.l		CARTMAGIC
 
 	move		#$2700,sr	; supervisor mode
 
