@@ -35,9 +35,7 @@
 
 #include "umm_malloc_cfg.h"   /* user-dependent */
 
-
-
-#include "dbglog.h"
+//#include "dbglog.h"
 
 /* ------------------------------------------------------------------------- */
 
