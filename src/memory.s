@@ -21,6 +21,8 @@
 	global memory_init
 	global bss_clear
 
+	include	hardware_atarist.i
+
 	code
 
 memory_init:

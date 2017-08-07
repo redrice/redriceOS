@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <strings.h>
 
+#include "hardware_atarist.h"
 #include "console_font.h"
 
 // Shifter info
@@ -8,7 +9,6 @@
 #define SHIFTER_PALETTE_SIZE 16
 #define SHIFTER_FRAMEBUFFER_SIZE (640*400/8)
 
-#define shifter_base (0xffff8200)
 struct shifter_regs {
 	uint8_t __padd0;
 	uint8_t addr_hi;
@@ -27,7 +27,7 @@ struct shifter_regs {
 	uint16_t colors[SHIFTER_PALETTE_SIZE];
 	uint8_t mode;
 };
-#define shifter (*(volatile struct shifter_regs *)(shifter_base))
+#define shifter (*(volatile struct shifter_regs *)(SHIFTER_BASE))
 
 enum SHIFTER_MODES {
 	SHIFTER_MODE_320x200x4 = 0,
