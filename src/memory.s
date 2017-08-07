@@ -26,7 +26,7 @@
 	code
 
 memory_init:
-	move.b	#$a,$ff8001	; start with 2x 2 MiB banks
+	move.b	#$a,ST_MMU	; start with 2x 2 MiB banks
 
 ; init the test pattern
 	movea.w	#$000008,a0	; bank 0
@@ -83,7 +83,7 @@ bank_test_end:
 	sub.l	#$200000,d1	; do the test for bank 0
 	beq	test_128k_STE
 
-	move.b	d6,$ff8001
+	move.b	d6,ST_MMU
 
 mem_sanity_check:
 	move.l	#$ff0055aa,d0
