@@ -3,6 +3,7 @@
 #include "fb.h"
 #include "fbterm.h"
 #include "con.h"
+#include "exception.h"
 
 uint32_t phystop;
 
@@ -13,7 +14,9 @@ main(void)
 	con_init();
 
 	printf("redriceOS booting...\n");
-	printf("%u kB memory installed\n", phystop / 1024);
+	printf("%u KiB memory installed\n", phystop / 1024);
+
+	exception_init();
 
 	while (1) {}
 }
