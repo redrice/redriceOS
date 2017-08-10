@@ -18,6 +18,11 @@ main(void)
 
 	exception_init();
 
+	/* cuase bus error */
+	uint8_t *a;
+	a = 0;
+	*a = 2;
+
 	while (1) {}
 }
 

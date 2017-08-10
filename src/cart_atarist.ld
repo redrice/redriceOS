@@ -41,6 +41,10 @@ SECTIONS {
 		*(fbram)
 	} > fbram
 
+	.svram (NOLOAD): {
+		*(svram)
+	} > svram
+
 	.bss (NOLOAD): {
 		__bss_start = .;
 		*(BSS)
