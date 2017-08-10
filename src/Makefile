@@ -8,7 +8,7 @@ LDFLAGS=-brawbin1 -T $(LDSCRIPT)# -M
 HW_ASM_INC=hardware_atarist.i
 HW_C_INC=hardware_atarist.h
 
-OBJS=boot.o kernel.o con.o fb.o fbterm.o memory.o libc/printf.o libc/divmod.o libc/strings_asm.o umm_malloc/umm_malloc.o
+OBJS=boot.o kernel.o con.o exception.o fb.o fbterm.o memory.o libc/printf.o libc/divmod.o libc/strings_asm.o umm_malloc/umm_malloc.o
 ROM_IMAGE=redriceos.img
 
 all: $(ROM_IMAGE)
