@@ -20,6 +20,18 @@ SECTIONS {
 		. = ALIGN(2);
 	} >rom
 
+	/*
+	.debug_aranges  : { *(.debug_aranges) } >rom
+	.debug_pubnames : { *(.debug_pubnames) } >rom
+	.debug_info: { *(.debug_info) } >rom
+	.debug_abbrev: { *(.debug_abbrev) } >rom
+	.debug_line: { *(.debug_line) } >rom
+	.debug_frame: { *(.debug_frame) } >rom
+	.debug_str: { *(.debug_str) } >rom
+	.debug_loc: { *(.debug_loc) } >rom
+	.debug_macinfo: { *(.debug_macinfo) } >rom
+	*/
+
 	.romend: {
 		*(romend)
 	} > romend
