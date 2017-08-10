@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stddef.h>
+#include <strings.h>
 //#include <string.h>
 
 #include "umm_malloc.h"
