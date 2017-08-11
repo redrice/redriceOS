@@ -8,21 +8,21 @@
 	xref _crash_a0
 	xref _crash_frame
 
+EX_UNHANDLED equ $0
 EX_BUS_ERROR equ $2
 EX_ADDRESS_ERROR equ $3
-EX_UNHANDLED equ $ffff
 
 	code
 
 _exception_handler_bus_error:
-	move.w		#EX_BUS_ERROR,_crash_exnum
+	move.b		#EX_BUS_ERROR,_crash_exnum
 	bra		_exception_handler_fatal
 _exception_handler_address_error:
-	move.w		#EX_ADDRESS_ERROR,_crash_exnum
+	move.b		#EX_ADDRESS_ERROR,_crash_exnum
 	bra		_exception_handler_fatal
 
 _exception_handler_unhandled:
-	move.w		#EX_UNHANDLED,_crash_exnum
+	move.b		#EX_UNHANDLED,_crash_exnum
 
 ; save register information and stack frame upon encountering fatal exception
 _exception_handler_fatal:

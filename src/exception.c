@@ -38,7 +38,7 @@ __section("svram") uint32_t crash_a7;
 
 __section("svram") uint16_t crash_frame[7];
 
-__section("svram") uint16_t crash_exnum;
+__section("svram") uint8_t crash_exnum;
 
 
 static uint16_t
