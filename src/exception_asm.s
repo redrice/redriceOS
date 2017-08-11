@@ -4,40 +4,34 @@
 	xref _crash_exnum
 
 EX_BUS_ERROR equ $2
-EX_UNHANDLED equ $ffff
+EX_UNHANDLED equ $ff
+
+FRAME_G0 equ $0
+FRAME_G1 equ $1
+FRAME_G2 equ $2
 
 	code
 
 _exception_handler_bus_error:
-	move.w		#EX_BUS_ERROR,_crash_exnum
+	move.b		#EX_BUS_ERROR,_crash_exnum
+;	move.b set frame type
 	bra		_exception_save_regs
 
 _exception_handler_unhandled:
-	move.w		#EX_UNHANDLED,_crash_exnum	
+	move.b		#EX_UNHANDLED,_crash_exnum
 
 _exception_save_regs:
-	move.l		d0,_crash_d0;
-	move.l		d1,_crash_d1;
-	move.l		d2,_crash_d2;
-	move.l		d3,_crash_d3;
-	move.l		d4,_crash_d4;
-	move.l		d4,_crash_d5;
-	move.l		d6,_crash_d6;
-	move.l		d7,_crash_d7;
+	; save all d regs to _crash_d0 to _crash_d7
+	movem.l		d0-d7,_crash_d0
+	movem.l		a0-a7,_crash_a0
 
-	move.l		a0,_crash_a0;
-	move.l		a1,_crash_a1;
-	move.l		a2,_crash_a2;
-	move.l		a3,_crash_a3;
-	move.l		a4,_crash_a4;
-	move.l		a4,_crash_a5;
-	move.l		a6,_crash_a6;
-	move.l		a7,_crash_a7;
+	; save exception stack frame, up to 7x 16-bit words
+	movem.w		(sp),d0-d6
+	movem.w		d0-d6,_crash_frame
 
 	; huge XXX
 	movea.l         #$300000,sp 
 
 	jsr		_exception_dump_regs
-
 
 ; vim: set ft=asm68k:
