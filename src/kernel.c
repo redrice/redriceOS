@@ -25,4 +25,5 @@ main(void)
 
 	while (1) {}
 }
+#pragma popwarn
 
