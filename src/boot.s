@@ -15,10 +15,6 @@ entry_rom:
 
 	reset
 
-	movea.l		#$020000,sp	; temporary stack location at the end
-					; of first 128kiB block, should work
-					; no matter the physical mem config
-
 	jmp		memory_init
 memory_configured:
 
