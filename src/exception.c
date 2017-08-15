@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "exception.h"
+#include "irq.h"
 
 extern void exception_handler_bus_error(void);
 extern void exception_handler_address_error(void);
@@ -61,12 +62,18 @@ exception_init(void)
 
 #define EX_BUS_ERROR 2
 #define EX_ADDRESS_ERROR 3
+#define EX_IPL_4 0x1C
+#define EX_IPL_6 0x1E
 	/* override selected exceptions */
 
 	exception_handler_install(exception_vec_to_off(EX_BUS_ERROR),
 		exception_handler_bus_error);
 	exception_handler_install(exception_vec_to_off(EX_ADDRESS_ERROR),
 		exception_handler_address_error);
+	exception_handler_install(exception_vec_to_off(EX_IPL_4),
+		irq_handler_vbl);
+	exception_handler_install(exception_vec_to_off(EX_IPL_6),
+		irq_handler_mfp);
 
 }
 
