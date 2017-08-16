@@ -8,6 +8,7 @@
 #ifndef UMM_MALLOC_H
 #define UMM_MALLOC_H
 
+#include <stddef.h>
 /* ------------------------------------------------------------------------ */
 
 void  umm_init( void );
