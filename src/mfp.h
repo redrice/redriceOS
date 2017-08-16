@@ -1,7 +1,7 @@
 #ifndef _MFP_H_
 #define _MFP_H_
 
-#include "bitop.h"
+#include "bit.h"
 
 /*
  * MFP registers, named according to the datasheet,

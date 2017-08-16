@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "bitop.h"
+#include "bit.h"
 #include "fb.h"
 #include "fbterm.h"
 #include "con.h"
