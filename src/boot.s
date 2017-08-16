@@ -1,6 +1,7 @@
 	xref		_main
 	xref		memory_init
 	xref		bss_clear
+	xref		data_to_ram
 	global		memory_configured
 
 CARTMAGIC equ $fa52235f
@@ -22,6 +23,7 @@ memory_configured:
 	move.l		_phystop,d6	; save phystop in d6, survive bss_clear
 
 	jsr		bss_clear	; zero out bss
+	jsr		data_to_ram	; copy data section to ram
 
 	move.l		d6,_phystop	; restore phystop value
 

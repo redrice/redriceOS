@@ -20,6 +20,7 @@
 	xref __bss_len
 	global memory_init
 	global bss_clear
+	global data_to_ram
 
 	include	hardware_atarist.i
 
@@ -119,6 +120,13 @@ bss_clear:
 	move.l	#__bss_len,d1
 	jsr	_bzero
 
+	rts
+
+data_to_ram:
+	move.l	#__data_start,a0
+	move.l	#__data_rom_start,a1
+	move.l	#__data_len,d0
+	jsr	_memcpy
 	rts
 
 ; vim: set ft=asm68k:

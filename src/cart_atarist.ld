@@ -15,11 +15,14 @@ SECTIONS {
 		*(CODE)
 	} >rom
 
+	__data_rom_start = .;
 	.data: {
+		__data_start = .;
 		. = ALIGN(2);
 		*(DATA)
 		. = ALIGN(2);
-	} >rom
+		__data_end = .;
+	} >ram AT>rom
 
 	/*
 	.debug_aranges  : { *(.debug_aranges) } >rom
@@ -52,5 +55,6 @@ SECTIONS {
 	} > ram
 
         __bss_len = __bss_end - __bss_start;
+	__data_len = __data_end - __data_start;
 }
 
