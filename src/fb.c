@@ -3,6 +3,7 @@
 
 #include "hardware_atarist.h"
 #include "console_font.h"
+#include "mfp.h"
 
 // Shifter info
 
@@ -100,7 +101,10 @@ fb_init()
 {
 	fb_dev.framebuffer = fbram;
 
-	shifter.mode = SHIFTER_MODE_640x400x1;
+	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD))
+		shifter.mode = SHIFTER_MODE_640x200x2;
+	else
+		shifter.mode = SHIFTER_MODE_640x400x1;
 
 	shifter.addr_hi = ((int)fb_dev.framebuffer >> 16);
 	shifter.addr_md = ((int)fb_dev.framebuffer >> 8);
@@ -125,14 +129,18 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 	const uint8_t font_height = 8;
 	//int screen_width = 320/2; // bytes per line
 
-	const struct shifter_mode *current_mode = &shifter_modes[0];
+	const struct shifter_mode *current_mode;
+	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD))
+		current_mode = &shifter_modes[SHIFTER_MODE_640x200x2];
+	else
+		current_mode = &shifter_modes[SHIFTER_MODE_640x400x1];
+		
 	
-//	int bit_plane_width = 2;
-	int bit_plane_width = 1;
+	int bit_plane_width = 2;
 	int offset = x >> 1; //  planes
 	int byte_offset = x & 0x1; // mod 4
 
-	int offset_x = (x >> 1) * current_mode->bit_planes * bit_plane_width;
+	int offset_x = offset * (current_mode->bit_planes) * bit_plane_width;
 
 	/* TODO: reduce the amount of calculations */
 	for (int i = 0; i < font_height; i++) {
