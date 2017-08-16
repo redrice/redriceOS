@@ -42,7 +42,7 @@ struct shifter_mode {
 	uint32_t stride;
 };
 
-static struct shifter_mode shifter_modes[] = {
+static const struct shifter_mode shifter_modes[] = {
 	[SHIFTER_MODE_320x200x4] = {
 		.width = 320,
 		.height = 200,
@@ -66,7 +66,7 @@ static struct shifter_mode shifter_modes[] = {
 
 // Framebuffer info
 
-static uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
+static const uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
 	0x000, // black
 	0x777, // white - only for debugging
 	//0x400, // red
@@ -125,7 +125,7 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 	const uint8_t font_height = 8;
 	//int screen_width = 320/2; // bytes per line
 
-	struct shifter_mode *current_mode = &shifter_modes[0];
+	const struct shifter_mode *current_mode = &shifter_modes[0];
 	
 //	int bit_plane_width = 2;
 	int bit_plane_width = 1;
