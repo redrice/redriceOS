@@ -26,6 +26,7 @@ memory_configured:
 	jsr		data_to_ram	; copy data section to ram
 
 	move.l		d6,_phystop	; restore phystop value
+	move.l		#__heap,_heapstart ; save heap start address
 
 	jsr		_main		; jump into C kernel code
 

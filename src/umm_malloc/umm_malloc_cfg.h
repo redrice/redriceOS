@@ -50,11 +50,14 @@
  *
  * ----------------------------------------------------------------------------
  */
+#include <stddef.h>
 
+extern size_t heapstart;
+extern size_t heapsize;
 
 /* Start addresses and the size of the heap */
-#define UMM_MALLOC_CFG_HEAP_ADDR   0x20000 /* TODO */
-#define UMM_MALLOC_CFG_HEAP_SIZE   0x10000 /* TODO */
+#define UMM_MALLOC_CFG_HEAP_ADDR   heapstart
+#define UMM_MALLOC_CFG_HEAP_SIZE   heapsize
 
 /* A couple of macros to make packing structures less compiler dependent */
 

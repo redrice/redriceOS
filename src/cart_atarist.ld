@@ -56,5 +56,7 @@ SECTIONS {
 
         __bss_len = __bss_end - __bss_start;
 	__data_len = __data_end - __data_start;
+
+	__heap = .;
 }
 

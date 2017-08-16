@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <strings.h>
-//#include <string.h>
+#include <string.h>
 
 #include "umm_malloc.h"
 
@@ -187,7 +187,7 @@ void umm_init( void ) {
   /* init heap pointer and size, and memset it to 0 */
   umm_heap = (umm_block *)UMM_MALLOC_CFG_HEAP_ADDR;
   umm_numblocks = (UMM_MALLOC_CFG_HEAP_SIZE / sizeof(umm_block));
-  //bzero(umm_heap, UMM_MALLOC_CFG_HEAP_SIZE);
+//  bzero(umm_heap, UMM_MALLOC_CFG_HEAP_SIZE);
 
   /* setup initial blank heap structure */
   {
@@ -582,7 +582,7 @@ void *umm_realloc( void *ptr, size_t size ) {
      */
 
     if( (ptr = umm_malloc( size )) ) {
-      //memcpy( ptr, oldptr, curSize );
+      memcpy( ptr, oldptr, curSize );
     }
 
     umm_free( oldptr );
