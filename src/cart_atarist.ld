@@ -11,10 +11,16 @@ MEMORY {
 
 SECTIONS {
 
+	/* These things all go into ROM. */
+
 	.text: {
 		*(CODE)
 	} >rom
 
+	/*
+	 * Data section will be outputted into ROM, but copied during boot into 
+	 * RAM, see data_to_ram routine in memory.s.
+	 */
 	__data_rom_start = .;
 	.data: {
 		__data_start = .;
@@ -40,13 +46,15 @@ SECTIONS {
 		*(romend)
 	} > romend
 
-	.fbram (NOLOAD): {
-		*(fbram)
-	} > fbram
+	/* RAM starts below. */
 
 	.svram (NOLOAD): {
 		*(svram)
 	} > svram
+
+	.fbram (NOLOAD): {
+		*(fbram)
+	} > fbram
 
 	.bss (NOLOAD): {
 		__bss_start = .;
