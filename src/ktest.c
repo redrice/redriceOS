@@ -43,3 +43,34 @@ ktest_console_print20()
 		printf("aaaaa\n");
 }
 
+void
+__interrupt void
+ktest_irq_handler_timera(void)
+{
+//      printf("nig %x %x \n", mfp_register_read(MFP_TADR), mfp_register_read(MFP_IPRA));
+        mfp_interrupt_stat_increment(MFP_ST_INT_TIMERA);
+}
+
+kovid
+ktest_timera(void)
+{
+	uint8_t ipl = 3;
+	ipl_set(&ipl);
+
+	mfp_init();
+	mfp_interrupt_enable(MFP_ST_INT_TIMERA);
+	mfp_timer_handler_set(MFP_TIMERA, irq_handler_timera);
+	mfp_timer_setup(MFP_TIMERA, MFP_TCR_DELAY_P16, 255);
+
+	printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        printf("test\n");
+        mfp_timer_setup(MFP_TIMERA, 0, 0);
+        mfp_interrupt_stat_print();
+}
+

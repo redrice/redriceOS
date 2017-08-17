@@ -1,6 +1,8 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "hardware_atarist.h"
+#include "exception.h"
 #include "mmio.h"
 #include "mfp.h"
 
@@ -22,6 +24,15 @@ const struct mfp_int_def mfp_int[] = {
 	{ MFP_INTCTRL_A, BIT(6), "RS-232 RI" },
 	{ MFP_INTCTRL_A, BIT(7), "Monitor detect" } /* highest priority */
 };
+
+const struct mfp_timer_def mfp_timer[] = {
+	{ MFP_TACR, 0, MFP_TADR, MFP_ST_INT_TIMERA, false, "Timer A" },
+	{ MFP_TBCR, 0, MFP_TBDR, MFP_ST_INT_TIMERB, false, "Timer B" },
+	{ MFP_TCDCR, 0, MFP_TCDR, MFP_ST_INT_TIMERC, true, "Timer C" },
+	{ MFP_TCDCR, 4, MFP_TCDR, MFP_ST_INT_TIMERD, true, "Timer D" }
+};
+
+static uint32_t mfp_int_stats[MFP_INTS];
 
 uint8_t
 mfp_register_read(uint8_t offset)
@@ -55,7 +66,8 @@ void
 mfp_vector_set()
 {
 	/* Configure 68k vectors 0x40 to 0x4F. */
-	mfp_register_write(MFP_VR, MFP_ST_VECTOR | MFP_VR_S);
+//	mfp_register_write(MFP_VR, MFP_ST_VECTOR | MFP_VR_S);  // XXX
+	mfp_register_write(MFP_VR, MFP_ST_VECTOR);
 }
 
 void
@@ -78,5 +90,42 @@ mfp_interrupt_disable(uint8_t intnum)
 	mfp_register_unset(MFP_IER + mfp_int[intnum].ctrl, mfp_int[intnum].bit);
 	mfp_register_unset(MFP_IPR + mfp_int[intnum].ctrl, mfp_int[intnum].bit);
 	mfp_register_unset(MFP_ISR + mfp_int[intnum].ctrl, mfp_int[intnum].bit);
+}
+
+void
+mfp_interrupt_stat_increment(uint8_t intnum)
+{
+	(mfp_int_stats[intnum])++;	
+}
+
+void
+mfp_interrupt_stat_print()
+{
+	uint8_t i;
+	for(i = 0; i < MFP_INTS; i++)
+		printf("%x ", mfp_int_stats[i]);
+
+	printf("\n");
+}
+
+void
+mfp_timer_setup(uint8_t timerid, uint8_t mode, uint8_t data)
+{
+	if ((mode > 0x7) && (mfp_timer[timerid].delayonly)) {
+		printf("%s does not support requested mode!\n",
+		    mfp_timer[timerid].name);
+		return;
+	}
+
+	mfp_register_write(mfp_timer[timerid].tdroff, data);
+	mfp_register_write(mfp_timer[timerid].tcroff,
+	    mode << mfp_timer[timerid].tcrshift);
+}
+
+void
+mfp_timer_handler_set(uint8_t timerid, void(*handler)(void))
+{
+	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
+	    mfp_timer[timerid].intnum), handler);
 }
 

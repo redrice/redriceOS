@@ -9,7 +9,7 @@ irq_handler_vbl(void)
 __interrupt void
 irq_handler_mfp(void)
 {
-	printf("mfp interrupted\n");
+	printf("IPL 6 vector this should never happen\n");
 	/* do things when mfp interrupts */
 }
 

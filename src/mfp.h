@@ -2,6 +2,7 @@
 #define _MFP_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "bit.h"
 
 /*
@@ -115,63 +116,31 @@
 #define MFP_VR		0x17	/* Vector register */
 #define MFP_VR_VNUM		BITS(7,4)
 #define MFP_VR_S		BIT(3)	/* In-service register enable */
+#define MFP_TCR_STOPPED			0x0
+#define MFP_TCR_DELAY_P4		0x1
+#define MFP_TCR_DELAY_P10		0x2
+#define MFP_TCR_DELAY_P16		0x3
+#define MFP_TCR_DELAY_P50		0x4
+#define MFP_TCR_DELAY_P64		0x5
+#define MFP_TCR_DELAY_P100		0x6
+#define MFP_TCR_DELAY_P200		0x7
+#define MFP_TCR_EVCNT			0x8
+#define MFP_TCR_PWM_P4			0x9
+#define MFP_TCR_PWM_P10			0xA
+#define MFP_TCR_PWM_P16			0xB
+#define MFP_TCR_PWM_P50			0xC
+#define MFP_TCR_PWM_P64			0xD
+#define MFP_TCR_PWM_P100		0xE
+#define MFP_TCR_PWM_P200		0xF
 #define MFP_TACR	0x19	/* Timer A control register */
 #define MFP_TACR_AC		BITS(3,0)
-#define MFP_TACR_AC_STOPPED		0x0
-#define MFP_TACR_AC_DELAY_P4		0x1
-#define MFP_TACR_AC_DELAY_P10		0x2
-#define MFP_TACR_AC_DELAY_P16		0x3
-#define MFP_TACR_AC_DELAY_P50		0x4
-#define MFP_TACR_AC_DELAY_P64		0x5
-#define MFP_TACR_AC_DELAY_P100		0x6
-#define MFP_TACR_AC_DELAY_P200		0x7
-#define MFP_TACR_AC_EVCNT		0x8
-#define MFP_TACR_AC_PWM_P4		0x9
-#define MFP_TACR_AC_PWM_P10		0xA
-#define MFP_TACR_AC_PWM_P16		0xB
-#define MFP_TACR_AC_PWM_P50		0xC
-#define MFP_TACR_AC_PWM_P64		0xD
-#define MFP_TACR_AC_PWM_P100		0xE
-#define MFP_TACR_AC_PWM_P200		0xF
 #define MFP_TACR_RST_TAO	BIT(4)
 #define MFP_TBCR	0x1B	/* Timer B control register */
 #define MFP_TBCR_BC		BITS(3,0)
-#define MFP_TBCR_BC_STOPPED		0x0
-#define MFP_TBCR_BC_DELAY_P4		0x1
-#define MFP_TBCR_BC_DELAY_P10		0x2
-#define MFP_TBCR_BC_DELAY_P16		0x3
-#define MFP_TBCR_BC_DELAY_P50		0x4
-#define MFP_TBCR_BC_DELAY_P64		0x5
-#define MFP_TBCR_BC_DELAY_P100		0x6
-#define MFP_TBCR_BC_DELAY_P200		0x7
-#define MFP_TBCR_BC_EVCNT		0x8
-#define MFP_TBCR_BC_PWM_P4		0x9
-#define MFP_TBCR_BC_PWM_P10		0xA
-#define MFP_TBCR_BC_PWM_P16		0xB
-#define MFP_TBCR_BC_PWM_P50		0xC
-#define MFP_TBCR_BC_PWM_P64		0xD
-#define MFP_TBCR_BC_PWM_P100		0xE
-#define MFP_TBCR_BC_PWM_P200		0xF
 #define MFP_TBCR_RST_TAO	BIT(4)
 #define MFP_TCDCR	0x1D	/* Timer C, D control regsiter */
 #define MFP_TCDCR_DC		BITS(2,0)
-#define MFP_TCDCR_DC_STOPPED		0	/* XXX: unset bits in above */
-#define MFP_TCDCR_DC_DELAY_P4		0x1
-#define MFP_TCDCR_DC_DELAY_P10		0x2
-#define MFP_TCDCR_DC_DELAY_P16		0x3
-#define MFP_TCDCR_DC_DELAY_P50		0x4
-#define MFP_TCDCR_DC_DELAY_P64		0x5
-#define MFP_TCDCR_DC_DELAY_P100		0x6
-#define MFP_TCDCR_DC_DELAY_P200		0x7
 #define MFP_TCDCR_CC		BITS(6,4)
-#define MFP_TCDCR_CC_STOPPED		0	/* XXX: unset bits in above */
-#define MFP_TCDCR_CC_DELAY_P4		0x10
-#define MFP_TCDCR_CC_DELAY_P10		0x20
-#define MFP_TCDCR_CC_DELAY_P16		0x30
-#define MFP_TCDCR_CC_DELAY_P50		0x40
-#define MFP_TCDCR_CC_DELAY_P64		0x50
-#define MFP_TCDCR_CC_DELAY_P100		0x60
-#define MFP_TCDCR_CC_DELAY_P200		0x70
 #define MFP_TADR	0x1F	/* Timer A data register */
 #define MFP_TBDR	0x21	/* Timer B data register */
 #define MFP_TCDR	0x23	/* Timer C data register */
@@ -221,6 +190,13 @@
 
 #define MFP_ST_VECTOR		0x40	/* *4 = offset 0x100 */
 
+#define MFP_INTS		16
+
+#define MFP_TIMERA		0
+#define MFP_TIMERB		1
+#define MFP_TIMERC		2
+#define MFP_TIMERD		3
+
 #define MFP_INTCTRL_A		0
 #define MFP_INTCTRL_B		2
 
@@ -240,10 +216,20 @@
 #define MFP_ST_INT_TIMERA	13
 #define MFP_ST_INT_RI		14
 #define MFP_ST_INT_MMD		15
+
 struct mfp_int_def {
-	uint8_t	ctrl;		/* interrupt controler A (0) or B (2) */
-	uint8_t bit;		/* bit controlling given interrupt */
+	const uint8_t ctrl;	/* interrupt controler A (0) or B (2) */
+	const uint8_t bit;	/* bit controlling given interrupt */
 	const char *desc;
+};
+
+struct mfp_timer_def {
+	const uint8_t tcroff;	/* control register offset */
+	const uint8_t tcrshift;	/* control register shift left */
+	const uint8_t tdroff;	/* data register offset */
+	const uint8_t intnum;	/* interrupt number */
+	const bool delayonly;	/* has only delay modes of operation */
+	const char *name;
 };
 
 uint8_t mfp_register_read(uint8_t);
@@ -254,6 +240,7 @@ void mfp_vector_set();
 void mfp_init();
 void mfp_interrupt_enable(uint8_t);
 void mfp_interrupt_disable(uint8_t);
+void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
 
 
 #endif /* _MFP_H_ */

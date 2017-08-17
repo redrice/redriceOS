@@ -42,7 +42,7 @@ __section("svram") uint16_t crash_frame[7];
 __section("svram") uint8_t crash_exnum;
 
 
-static uint16_t
+uint16_t
 exception_vec_to_off(uint8_t v)
 {
 	return v * 4;

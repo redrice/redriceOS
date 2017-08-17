@@ -8,6 +8,7 @@
 void exception_init(void);
 void exception_handler_install(uint16_t, void(*)(void));
 void exception_handler_unhandled(void);
+uint16_t exception_vec_to_off(uint8_t);
 
 #endif /* _EXCEPTION_H_ */
 
