@@ -1,6 +1,7 @@
 #ifndef _MFP_H_
 #define _MFP_H_
 
+#include <stdint.h>
 #include "bit.h"
 
 /*
@@ -35,6 +36,7 @@
 #define MFP_DDR_GPIP5		BIT(5)
 #define MFP_DDR_GPIP6		BIT(6)
 #define MFP_DDR_GPIP7		BIT(7)
+#define MFP_IER		7
 #define MFP_IERA	7	/* Interrupt enable register A */
 #define MFP_IERA_TIMERB		BIT(0)
 #define MFP_IERA_XMIT_ERROR	BIT(1)
@@ -53,6 +55,7 @@
 #define MFP_IERB_TIMERC		BIT(5)
 #define MFP_IERB_GPIP6		BIT(6)
 #define MFP_IERB_GPIP5		BIT(7)
+#define MFP_IPR		0xB
 #define MFP_IPRA	0xB	/* Interrupt pending register A */
 #define MFP_IPRA_TIMERB		BIT(0)
 #define MFP_IPRA_XMIT_ERROR	BIT(1)
@@ -71,6 +74,7 @@
 #define MFP_IPRB_TIMERC		BIT(5)
 #define MFP_IPRB_GPIP6		BIT(6)
 #define MFP_IPRB_GPIP5		BIT(7)
+#define MFP_ISR		0xF
 #define MFP_ISRA	0xF	/* Interrupt in-service register A */
 #define MFP_ISRA_TIMERB		BIT(0)
 #define MFP_ISRA_XMIT_ERROR	BIT(1)
@@ -89,6 +93,7 @@
 #define MFP_ISRB_TIMERC		BIT(5)
 #define MFP_ISRB_GPIP6		BIT(6)
 #define MFP_ISRB_GPIP5		BIT(7)
+#define MFP_IMR		0x13
 #define MFP_IMRA	0x13	/* Interrupt mask register A */
 #define MFP_IMRA_TIMERB		BIT(0)
 #define MFP_IMRA_XMIT_ERROR	BIT(1)
@@ -214,8 +219,42 @@
 #define MFP_GPIO_RI		MFP_GPDR_GPIP6	/* RS-232 RI */
 #define MFP_GPIO_MMD		MFP_GPDR_GPIP7	/* Mono monitor detect */
 
-uint8_t mfp_register_read(uint8_t offset);
-void mfp_register_write(uint8_t offset, uint8_t v);
+#define MFP_ST_VECTOR		0x40	/* *4 = offset 0x100 */
+
+#define MFP_INTCTRL_A		0
+#define MFP_INTCTRL_B		2
+
+#define MFP_ST_INT_CB		0
+#define MFP_ST_INT_DCD		1
+#define MFP_ST_INT_CTS		2
+#define MFP_ST_INT_BLITTER	3
+#define MFP_ST_INT_TIMERD	4	/* used for baud generation */
+#define MFP_ST_INT_TIMERC	5
+#define MFP_ST_INT_ACIA		6
+#define MFP_ST_INT_FDC		7
+#define MFP_ST_INT_TIMERB	8
+#define MFP_ST_INT_XMIT_ERROR	9
+#define MFP_ST_INT_XMIT_BUFEMPTY 10
+#define MFP_ST_INT_RCV_ERROR	11
+#define MFP_ST_INT_RCV_BUFFULL	12
+#define MFP_ST_INT_TIMERA	13
+#define MFP_ST_INT_RI		14
+#define MFP_ST_INT_MMD		15
+struct mfp_int_def {
+	uint8_t	ctrl;		/* interrupt controler A (0) or B (2) */
+	uint8_t bit;		/* bit controlling given interrupt */
+	const char *desc;
+};
+
+uint8_t mfp_register_read(uint8_t);
+void mfp_register_write(uint8_t, uint8_t);
+void mfp_register_set(uint8_t, uint8_t);
+void mfp_register_unset(uint8_t, uint8_t);
+void mfp_vector_set();
+void mfp_init();
+void mfp_interrupt_enable(uint8_t);
+void mfp_interrupt_disable(uint8_t);
+
 
 #endif /* _MFP_H_ */
 
