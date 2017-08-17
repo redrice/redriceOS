@@ -11,6 +11,6 @@
 #define BITV(_y,_x) ((_y & BIT(_x)) >> (_x))
 
 /* get bits _x through _y, _x < _y */
-#define BITS(_x,_y) ((BIT(MAX((_x), (_y)) + 1) - 1) ^ (__BIT(MIN((_x), (_y))) - 1))
+#define BITS(_x,_y) ((BIT(MAX((_x), (_y)) + 1) - 1) ^ (BIT(MIN((_x), (_y))) - 1))
 
 #endif /* _BIT_H_ */
