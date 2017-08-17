@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <string.h>
 
+/* for ktest_data_section */
 uint16_t a = 1;
 uint8_t b = 2;
 uint16_t c = 3;
@@ -32,5 +33,13 @@ ktest_bus_error()
 	uint8_t *a;
 	a = 0;
 	*a = 2;
+}
+
+void
+ktest_console_print20()
+{
+	int i;
+	for(i = 0; i < 20;  i++)
+		printf("aaaaa\n");
 }
 
