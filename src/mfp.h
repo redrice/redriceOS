@@ -240,7 +240,11 @@ void mfp_vector_set();
 void mfp_init();
 void mfp_interrupt_enable(uint8_t);
 void mfp_interrupt_disable(uint8_t);
+void mfp_interrupt_stat_print();
+void mfp_interrupt_stat_increment(uint8_t);
 void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
+void mfp_timer_handler_set(uint8_t, void(*)(void));
+
 
 
 #endif /* _MFP_H_ */

@@ -4,6 +4,9 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "ipl.h"
+#include "mfp.h"
+
 /* for ktest_data_section */
 uint16_t a = 1;
 uint8_t b = 2;
@@ -43,7 +46,7 @@ ktest_console_print20()
 		printf("aaaaa\n");
 }
 
-void
+
 __interrupt void
 ktest_irq_handler_timera(void)
 {
@@ -51,7 +54,7 @@ ktest_irq_handler_timera(void)
         mfp_interrupt_stat_increment(MFP_ST_INT_TIMERA);
 }
 
-kovid
+void
 ktest_timera(void)
 {
 	uint8_t ipl = 3;
@@ -59,7 +62,7 @@ ktest_timera(void)
 
 	mfp_init();
 	mfp_interrupt_enable(MFP_ST_INT_TIMERA);
-	mfp_timer_handler_set(MFP_TIMERA, irq_handler_timera);
+	mfp_timer_handler_set(MFP_TIMERA, ktest_irq_handler_timera);
 	mfp_timer_setup(MFP_TIMERA, MFP_TCR_DELAY_P16, 255);
 
 	printf("test\n");

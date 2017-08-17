@@ -102,6 +102,7 @@ void
 mfp_interrupt_stat_print()
 {
 	uint8_t i;
+	printf("MFP int stats: ");
 	for(i = 0; i < MFP_INTS; i++)
 		printf("%x ", mfp_int_stats[i]);
 
