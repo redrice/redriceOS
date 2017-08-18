@@ -3,10 +3,19 @@
 
 #include <stdint.h>
 
+#include "bus.h"
+
+/*
 void mmio_read_1(__reg("a0") volatile uint8_t *, __reg("a1") uint8_t *);
 void mmio_write_1(__reg("a0") volatile uint8_t *, __reg("a1") uint8_t *);
 void mmio_set_1(__reg("a0") volatile uint8_t *, __reg("d0") uint8_t);
 void mmio_unset_1(__reg("a0") volatile uint8_t *, __reg("d0") uint8_t);
+*/
+
+void mmio_read_1(__reg("a0") bus_addr, __reg("a1") uint8_t *);
+void mmio_write_1(__reg("a0") bus_addr, __reg("a1") uint8_t *);
+void mmio_set_1(__reg("a0") bus_addr, __reg("d0") uint8_t);
+void mmio_unset_1(__reg("a0") bus_addr, __reg("d0") uint8_t);
 
 #endif /* _IPL_H_ */
 

@@ -13,8 +13,8 @@ const struct mfp_int_def mfp_int[] = {
 	{ MFP_INTCTRL_B, BIT(3), "BLiTTER" },
 	{ MFP_INTCTRL_B, BIT(4), "Timer D" },
 	{ MFP_INTCTRL_B, BIT(5), "Timer C" },
-	{ MFP_INTCTRL_B, BIT(6), "ACIA" },
-	{ MFP_INTCTRL_B, BIT(7), "FDC" },
+	{ MFP_INTCTRL_B, BIT(6), "Keyboard/MIDI ACIA" },
+	{ MFP_INTCTRL_B, BIT(7), "FDC/HDD" },
 	{ MFP_INTCTRL_A, BIT(0), "Timer B" },
 	{ MFP_INTCTRL_A, BIT(1), "RS-232 TXD Error" },
 	{ MFP_INTCTRL_A, BIT(2), "RS-232 TXD Buffer Empty" },
@@ -59,7 +59,7 @@ mfp_register_read(uint8_t offset)
 {
 	uint8_t value;
 
-	mmio_read_1((volatile uint8_t *)(MFP_BASE + offset), &value);
+	mmio_read_1((MFP_BASE + offset), &value);
 
 	return value;
 }
@@ -67,19 +67,19 @@ mfp_register_read(uint8_t offset)
 void
 mfp_register_write(uint8_t offset, uint8_t value)
 {
-	mmio_write_1((volatile uint8_t *)(MFP_BASE + offset), &value);
+	mmio_write_1(MFP_BASE + offset, &value);
 }
 
 void
 mfp_register_set(uint8_t offset, uint8_t bits)
 {
-	mmio_set_1((volatile uint8_t *)(MFP_BASE + offset), bits);
+	mmio_set_1((MFP_BASE + offset), bits);
 }
 
 void
 mfp_register_unset(uint8_t offset, uint8_t bits)
 {
-	mmio_unset_1((volatile uint8_t *)(MFP_BASE + offset), bits);
+	mmio_unset_1((MFP_BASE + offset), bits);
 }
 
 /*

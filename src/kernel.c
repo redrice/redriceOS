@@ -24,6 +24,9 @@ main(void)
 	    phystop / 1024, heapstart, heapsize / 1024);
 
 	exception_init();
+	mfp_init();
+
+	/* ktest_acia(); */
 
 	while (1) {}
 }
