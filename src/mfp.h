@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "bit.h"
 
+#define MFP_REGS		24
 /*
  * MFP registers, named according to the datasheet,
  * unless Atari specific, then it's my invention, lulz.
@@ -226,6 +227,7 @@ struct mfp_int_def {
 struct mfp_timer_def {
 	const uint8_t tcroff;	/* control register offset */
 	const uint8_t tcrshift;	/* control register shift left */
+	const uint8_t tcrbits;	/* control register bits for a given timer */
 	const uint8_t tdroff;	/* data register offset */
 	const uint8_t intnum;	/* interrupt number */
 	const bool delayonly;	/* has only delay modes of operation */
@@ -243,9 +245,8 @@ void mfp_interrupt_disable(uint8_t);
 void mfp_interrupt_stat_print();
 void mfp_interrupt_stat_increment(uint8_t);
 void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
+void mfp_timer_stop(uint8_t);
 void mfp_timer_handler_set(uint8_t, void(*)(void));
-
-
 
 #endif /* _MFP_H_ */
 

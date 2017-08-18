@@ -26,10 +26,14 @@ const struct mfp_int_def mfp_int[] = {
 };
 
 const struct mfp_timer_def mfp_timer[] = {
-	{ MFP_TACR, 0, MFP_TADR, MFP_ST_INT_TIMERA, false, "Timer A" },
-	{ MFP_TBCR, 0, MFP_TBDR, MFP_ST_INT_TIMERB, false, "Timer B" },
-	{ MFP_TCDCR, 0, MFP_TCDR, MFP_ST_INT_TIMERC, true, "Timer C" },
-	{ MFP_TCDCR, 4, MFP_TCDR, MFP_ST_INT_TIMERD, true, "Timer D" }
+	{ MFP_TACR, 0, MFP_TACR_AC, MFP_TADR, MFP_ST_INT_TIMERA, false,
+	    "Timer A" },
+	{ MFP_TBCR, 0, MFP_TBCR_BC, MFP_TBDR, MFP_ST_INT_TIMERB, false,
+	    "Timer B" },
+	{ MFP_TCDCR, 4, MFP_TCDCR_CC, MFP_TCDR, MFP_ST_INT_TIMERC, true,
+	    "Timer C" },
+	{ MFP_TCDCR, 0, MFP_TCDCR_DC, MFP_TCDR, MFP_ST_INT_TIMERD, true,
+	    "Timer D" }
 };
 
 static uint32_t mfp_int_stats[MFP_INTS];
@@ -62,6 +66,9 @@ mfp_register_unset(uint8_t offset, uint8_t bits)
 	mmio_unset_1((volatile uint8_t *)(MFP_BASE + offset), bits);
 }
 
+/*
+ * Set 68000 vector for MFP interrupts.
+ */
 void
 mfp_vector_set()
 {
@@ -70,12 +77,24 @@ mfp_vector_set()
 	mfp_register_write(MFP_VR, MFP_ST_VECTOR);
 }
 
+/*
+ * Do the basic init of MFP.
+ */
 void
 mfp_init()
 {
+	uint8_t i = 1;
+	while(i < MFP_REGS) {
+		mfp_register_write(i, 0);
+		i++; i++;
+	}
+
 	mfp_vector_set();
 }
 
+/*
+ * Enable a specific interrupt in MFP. Only gets serviced if IPL is 5 or lower.
+ */
 void
 mfp_interrupt_enable(uint8_t intnum)
 {
@@ -83,6 +102,9 @@ mfp_interrupt_enable(uint8_t intnum)
 	mfp_register_set(MFP_IER + mfp_int[intnum].ctrl, mfp_int[intnum].bit);
 }
 
+/*
+ * Disable an interrupt in MFP.
+ */
 void
 mfp_interrupt_disable(uint8_t intnum)
 {
@@ -92,12 +114,20 @@ mfp_interrupt_disable(uint8_t intnum)
 	mfp_register_unset(MFP_ISR + mfp_int[intnum].ctrl, mfp_int[intnum].bit);
 }
 
+/*
+ * Incrememnt a counter (counting how many times a given MFP interrupt was
+ * fired). Should somehow be called automatically when MFP interrupt is
+ * serviced. Currently needs to be called manually.
+ */
 void
 mfp_interrupt_stat_increment(uint8_t intnum)
 {
 	(mfp_int_stats[intnum])++;	
 }
 
+/*
+ * Print timer statistics, only valid if timer ISR updates mfp_int_stats[].
+ */
 void
 mfp_interrupt_stat_print()
 {
@@ -109,20 +139,42 @@ mfp_interrupt_stat_print()
 	printf("\n");
 }
 
+/*
+ * Configure a timer according to provided parameters.
+ */
 void
 mfp_timer_setup(uint8_t timerid, uint8_t mode, uint8_t data)
 {
+	uint8_t ctrl;
+
 	if ((mode > 0x7) && (mfp_timer[timerid].delayonly)) {
 		printf("%s does not support requested mode!\n",
 		    mfp_timer[timerid].name);
 		return;
 	}
 
+	ctrl = mfp_register_read(mfp_timer[timerid].tcroff);
+
+	ctrl |= (mode << mfp_timer[timerid].tcrshift) &
+	    mfp_timer[timerid].tcrbits;
+
 	mfp_register_write(mfp_timer[timerid].tdroff, data);
-	mfp_register_write(mfp_timer[timerid].tcroff,
-	    mode << mfp_timer[timerid].tcrshift);
+	mfp_register_write(mfp_timer[timerid].tcroff, ctrl);
 }
 
+/*
+ * Stop the timer, does not disable interrupt.
+ */
+void
+mfp_timer_stop(uint8_t timerid)
+{
+	mfp_register_unset(mfp_timer[timerid].tcroff,
+	    mfp_timer[timerid].tcrbits);
+}
+
+/*
+ * Set the handler to be executed once interrupt for a given timer fires.
+ */
 void
 mfp_timer_handler_set(uint8_t timerid, void(*handler)(void))
 {
