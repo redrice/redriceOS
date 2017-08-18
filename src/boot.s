@@ -6,7 +6,7 @@
 
 CARTMAGIC equ $fa52235f
 
-	code
+	section		"boot",code
 
 entry_rom:
 	; ID used by TOS to jump early into code on cartridge.

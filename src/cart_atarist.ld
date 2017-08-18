@@ -12,6 +12,9 @@ MEMORY {
 SECTIONS {
 
 	/* These things all go into ROM. */
+	.boot: {
+		*(boot)
+	} >rom
 
 	.text: {
 		*(CODE)
