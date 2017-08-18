@@ -258,3 +258,23 @@ mfp_timer_stats_print()
 	}
 }
 
+void
+mfp_serial_write(uint8_t c)
+{
+	while(!(mfp_register_read(MFP_TSR) & MFP_TSR_BE))
+		;;	// XXX: bail out after some time with err
+
+	mfp_register_write(MFP_UDR, c);
+}
+
+/* XXX needs to be customizable */
+void
+mfp_serial_init()
+{
+	mfp_register_write(MFP_UCR, MFP_UCR_ST_ASYNC_S1T1 | MFP_UCR_CLK);
+
+	mfp_timer_setup(MFP_TIMERD, MFP_TCR_DELAY_P4, 1);
+
+	mfp_register_set(MFP_TSR, MFP_TSR_TE);
+}
+
