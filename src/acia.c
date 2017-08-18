@@ -35,10 +35,10 @@ acia_data_read(struct acia_state *as)
 void
 acia_data_write(struct acia_state *as, uint8_t value)
 {
-	mmio_write_1(as->base + ACIA_TXD, &value);
-
 	while (acia_status_read(as) ^ ACIA_SR_TDRE)
 		;;
+
+	mmio_write_1(as->base + ACIA_TXD, &value);
 }
 
 void
