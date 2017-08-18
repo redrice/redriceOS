@@ -81,7 +81,7 @@ void
 exception_handler_install(uint16_t offset, void(*handler)(void) )
 {
 	/* XXX: should define uptr-something type for this purpose */
-	uint32_t *vector;
+	volatile uint32_t *vector;
        
 	vector = (uint32_t *) offset;
 
@@ -89,6 +89,19 @@ exception_handler_install(uint16_t offset, void(*handler)(void) )
 
 	*vector = (uint32_t) handler;
 		
+}
+
+/* XXX this really needs a rewrite. */
+void *
+exception_handler_get(uint16_t offset)
+{
+	void (*handler)(void);
+	volatile uint32_t *vector;
+
+	vector = (volatile void *) offset;
+	handler = ( void (*)(void) ) *vector;
+
+	return (void *) handler;
 }
 
 void

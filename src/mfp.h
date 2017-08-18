@@ -218,6 +218,12 @@
 #define MFP_ST_INT_RI		14
 #define MFP_ST_INT_MMD		15
 
+/*
+ * MFP clock frequency in Hz. The approximate interrupt frequency is:
+ * MFP_ST_CLK / divider / data register.
+ */
+#define MFP_ST_CLK		2457600
+
 struct mfp_int_def {
 	const uint8_t ctrl;	/* interrupt controler A (0) or B (2) */
 	const uint8_t bit;	/* bit controlling given interrupt */
@@ -234,6 +240,12 @@ struct mfp_timer_def {
 	const char *name;
 };
 
+struct mfp_timer_state_def {
+	bool running;
+	uint8_t tcr;
+	uint8_t otdr;		/* original value of timer data register */
+};
+
 uint8_t mfp_register_read(uint8_t);
 void mfp_register_write(uint8_t, uint8_t);
 void mfp_register_set(uint8_t, uint8_t);
@@ -246,6 +258,7 @@ void mfp_interrupt_stat_print();
 void mfp_interrupt_stat_increment(uint8_t);
 void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
 void mfp_timer_stop(uint8_t);
+void mfp_timer_stats_print();
 void mfp_timer_handler_set(uint8_t, void(*)(void));
 
 #endif /* _MFP_H_ */

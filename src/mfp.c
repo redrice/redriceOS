@@ -36,6 +36,22 @@ const struct mfp_timer_def mfp_timer[] = {
 	    "Timer D" }
 };
 
+const uint8_t mfp_timer_delay_divs[] =
+	{ 0, 4, 10, 16, 50, 64, 100, 200 };
+
+/*
+ * Holds current state of timers.
+ */
+static struct mfp_timer_state_def mfp_timer_state[] = {
+	{ false, 0, 0 },
+	{ false, 0, 0 },
+	{ false, 0, 0 },
+	{ false, 0, 0 }
+};
+
+/*
+ * Holds interrupt statistics (how many times a given MFP interrupt was fired).
+ */
 static uint32_t mfp_int_stats[MFP_INTS];
 
 uint8_t
@@ -158,6 +174,10 @@ mfp_timer_setup(uint8_t timerid, uint8_t mode, uint8_t data)
 	ctrl |= (mode << mfp_timer[timerid].tcrshift) &
 	    mfp_timer[timerid].tcrbits;
 
+	mfp_timer_state[timerid].tcr = mode;
+	mfp_timer_state[timerid].otdr = data;
+	mfp_timer_state[timerid].running = true;
+
 	mfp_register_write(mfp_timer[timerid].tdroff, data);
 	mfp_register_write(mfp_timer[timerid].tcroff, ctrl);
 }
@@ -170,6 +190,10 @@ mfp_timer_stop(uint8_t timerid)
 {
 	mfp_register_unset(mfp_timer[timerid].tcroff,
 	    mfp_timer[timerid].tcrbits);
+
+	mfp_timer_state[timerid].tcr = 0;
+	mfp_timer_state[timerid].otdr = 0;
+	mfp_timer_state[timerid].running = false;
 }
 
 /*
@@ -180,5 +204,57 @@ mfp_timer_handler_set(uint8_t timerid, void(*handler)(void))
 {
 	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
 	    mfp_timer[timerid].intnum), handler);
+}
+
+/*
+ * Get the timer frequency in Hz, this only works for timers configured in
+ * delay mode.
+ */
+static uint32_t
+mfp_timer_frequency(uint8_t timerid)
+{
+	uint32_t f;
+
+	f = MFP_ST_CLK / mfp_timer_delay_divs[mfp_timer_state[timerid].tcr] /
+	    mfp_timer_state[timerid].otdr;	
+
+	return f;
+}
+
+/*
+ * Print timer statistics.
+ */
+void
+mfp_timer_stats_print()
+{
+	uint8_t tcr, i;
+
+	printf("Timer\tMode\tHandler\tHz\n");
+
+	for (i = 0; i < 4; i++) {
+		printf("%s\t", mfp_timer[i].name);
+		if (mfp_timer_state[i].running == false) {
+			printf("Stopped\n");
+			continue;
+		}
+
+		tcr = mfp_timer_state[i].tcr;
+
+		if ((tcr > 0) && (tcr < 8))
+			printf("Delay /%u\t", mfp_timer_delay_divs[tcr]);
+		else if (tcr == 8)
+			printf("Event counter\t");
+		else if ((tcr > 8) && (tcr <= 15))
+			printf("PWM /%u\t", mfp_timer_delay_divs[tcr-8]);
+		else
+			printf("?\t");
+
+		printf("%p\t", exception_handler_get(
+		    exception_vec_to_off(MFP_ST_VECTOR + mfp_timer[i].intnum))); 
+
+		printf("%u\t", mfp_timer_frequency(i));
+
+		printf("\n");
+	}
 }
 
