@@ -6,6 +6,7 @@
 #include "mmio.h"
 #include "mfp.h"
 #include "serial.h"
+#include "con.h"
 
 static const struct mfp_int_def mfp_int[] = {
 	{ MFP_INTCTRL_B, BIT(0), "Centronics Busy" }, /* lowest priority */
@@ -63,6 +64,10 @@ static struct mfp_timer_state_def mfp_timer_state[] = {
  * Holds interrupt statistics (how many times a given MFP interrupt was fired).
  */
 static uint32_t mfp_int_stats[MFP_INTS];
+
+struct con_dev_def con_dev_mfp = {
+	"MFP UART console", mfp_serial_write, mfp_serial_console_init
+};
 
 uint8_t
 mfp_register_read(uint8_t offset)
@@ -324,5 +329,11 @@ mfp_serial_init(uint32_t baud, uint8_t mode, uint8_t parity)
 	mfp_register_set(MFP_TSR, MFP_TSR_TE);
 
 	return true;
+}
+
+void
+mfp_serial_console_init(void)
+{
+        mfp_serial_init(BAUD_19200, ASYNC_STOP1_START1, PARITY_NONE);
 }
 

@@ -265,10 +265,9 @@ void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
 void mfp_timer_stop(uint8_t);
 void mfp_timer_stats_print();
 void mfp_timer_handler_set(uint8_t, void(*)(void));
-
+void mfp_serial_console_init(void);
 void mfp_serial_write(uint8_t);
 bool mfp_serial_init(uint32_t, uint8_t, uint8_t);
-
 
 #endif /* _MFP_H_ */
 

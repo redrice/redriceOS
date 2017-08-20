@@ -1,7 +1,12 @@
 #include "fbterm.h"
 #include "fb.h"
+#include "con.h"
 
 static struct fbterm_dev fbt;
+
+struct con_dev_def con_dev_fbterm = {
+	"Framebuffer console", fbterm_putc, fbterm_init
+};
 
 void
 fbterm_init()

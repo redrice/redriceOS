@@ -4,22 +4,19 @@
 #include "mfp.h"
 #include "serial.h"
 
-struct con_dev {
-	void (*putc)(uint8_t);
-};
+extern struct con_dev_def con_dev_mfp;
 
-struct con_dev console;
+struct con_dev_def *console;
 
 void
 con_init()
 {
 	/*
-	fb_init();
 	fbterm_init();	
 	console.putc = &fbterm_putc;
 	*/
-	mfp_serial_init(BAUD_19200, ASYNC_STOP1_START1, PARITY_NONE);
-	console.putc = &mfp_serial_write;
+
+	console = &con_dev_mfp;
 }
 
 void
@@ -29,6 +26,6 @@ con_putc(uint8_t c)
 	 * Things should be saved to a buffer that could be replayed
 	 * after console init/change or using a command.
 	 */
-	console.putc(c);	
+	console->putc(c);
 }
 
