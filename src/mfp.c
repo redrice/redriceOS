@@ -5,8 +5,9 @@
 #include "exception.h"
 #include "mmio.h"
 #include "mfp.h"
+#include "serial.h"
 
-const struct mfp_int_def mfp_int[] = {
+static const struct mfp_int_def mfp_int[] = {
 	{ MFP_INTCTRL_B, BIT(0), "Centronics Busy" }, /* lowest priority */
 	{ MFP_INTCTRL_B, BIT(1), "RS-232 DCD" },
 	{ MFP_INTCTRL_B, BIT(2), "RS-232 CTS" },
@@ -25,7 +26,7 @@ const struct mfp_int_def mfp_int[] = {
 	{ MFP_INTCTRL_A, BIT(7), "Monitor detect" } /* highest priority */
 };
 
-const struct mfp_timer_def mfp_timer[] = {
+static const struct mfp_timer_def mfp_timer[] = {
 	{ MFP_TACR, 0, MFP_TACR_AC, MFP_TADR, MFP_ST_INT_TIMERA, false,
 	    "Timer A" },
 	{ MFP_TBCR, 0, MFP_TBCR_BC, MFP_TBDR, MFP_ST_INT_TIMERB, false,
@@ -36,8 +37,17 @@ const struct mfp_timer_def mfp_timer[] = {
 	    "Timer D" }
 };
 
-const uint8_t mfp_timer_delay_divs[] =
+static const uint8_t mfp_timer_delay_divs[] =
 	{ 0, 4, 10, 16, 50, 64, 100, 200 };
+
+static const struct mfp_ser_baud_cfg_def mfp_ser_baud_cfg[] = {
+	{ MFP_TCR_DELAY_P4, 16 },
+	{ MFP_TCR_DELAY_P4, 8 },
+	{ MFP_TCR_DELAY_P4, 4 },
+	{ 0, 0 },	/* unsupported on MFP */
+	{ MFP_TCR_DELAY_P4, 2 },
+	{ MFP_TCR_DELAY_P4, 1 }
+};
 
 /*
  * Holds current state of timers.
@@ -258,6 +268,9 @@ mfp_timer_stats_print()
 	}
 }
 
+/*
+ * Write a single character to the serial port.
+ */
 void
 mfp_serial_write(uint8_t c)
 {
@@ -267,14 +280,49 @@ mfp_serial_write(uint8_t c)
 	mfp_register_write(MFP_UDR, c);
 }
 
-/* XXX needs to be customizable */
-void
-mfp_serial_init()
+/*
+ * Configure the MPF UART.
+ */
+bool
+mfp_serial_init(uint32_t baud, uint8_t mode, uint8_t parity)
 {
-	mfp_register_write(MFP_UCR, MFP_UCR_ST_ASYNC_S1T1 | MFP_UCR_CLK);
+	uint8_t ucr;
+
+	ucr = MFP_UCR_CLK;
+
+	if (mode == ASYNC_STOP1_START1)
+		ucr |= MFP_UCR_ST_ASYNC_S1T1;
+	else {
+		printf("mfpser: Error - unsupported transmission mode\n");
+		return false;
+	}
+
+	switch (parity) {
+	case PARITY_EVEN:
+		ucr |= MFP_UCR_PE | MFP_UCR_EO; // XXX?
+		break;
+	case PARITY_ODD:
+		ucr |= MFP_UCR_PE;
+		break;
+	case PARITY_NONE:
+		break;
+	default:
+		printf("mfpser: Error - unsupported parity mode\n");
+		return false;
+	}
+
+	mfp_register_write(MFP_UCR, ucr);
+
+	if ((mfp_ser_baud_cfg[baud].tcr == 0) &&
+	    (mfp_ser_baud_cfg[baud].tdr == 0)) {
+		printf("mfpser: Unsupported baud rate\n");
+		return false;
+	}
 
 	mfp_timer_setup(MFP_TIMERD, MFP_TCR_DELAY_P4, 1);
 
 	mfp_register_set(MFP_TSR, MFP_TSR_TE);
+
+	return true;
 }
 

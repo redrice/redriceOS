@@ -246,6 +246,11 @@ struct mfp_timer_state_def {
 	uint8_t otdr;		/* original value of timer data register */
 };
 
+struct mfp_ser_baud_cfg_def {
+	uint8_t tcr;
+	uint8_t tdr;
+};
+
 uint8_t mfp_register_read(uint8_t);
 void mfp_register_write(uint8_t, uint8_t);
 void mfp_register_set(uint8_t, uint8_t);
@@ -262,7 +267,7 @@ void mfp_timer_stats_print();
 void mfp_timer_handler_set(uint8_t, void(*)(void));
 
 void mfp_serial_write(uint8_t);
-void mfp_serial_init();
+bool mfp_serial_init(uint32_t, uint8_t, uint8_t);
 
 
 #endif /* _MFP_H_ */
