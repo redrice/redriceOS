@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "con.h"
 #include "fb.h"
 #include "fbterm.h"
@@ -5,18 +7,19 @@
 #include "serial.h"
 
 extern struct con_dev_def con_dev_mfp;
+extern struct con_dev_def con_dev_fbterm;
 
 struct con_dev_def *console;
 
 void
 con_init()
 {
-	/*
-	fbterm_init();	
-	console.putc = &fbterm_putc;
-	*/
-
 	console = &con_dev_mfp;
+	/* console = &con_dev_fbterm; */
+
+	console->init();
+
+	printf("console: %s\n", console->name);
 }
 
 void

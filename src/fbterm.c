@@ -9,7 +9,7 @@ struct con_dev_def con_dev_fbterm = {
 };
 
 void
-fbterm_init()
+fbterm_init(void)
 {
 	fbt.curx = 0;
 	fbt.cury = 0;
