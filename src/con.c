@@ -17,6 +17,8 @@ con_init()
 	console = &con_dev_mfp;
 	/* console = &con_dev_fbterm; */
 
+	fb_init();
+
 	console->init();
 
 	printf("console: %s\n", console->name);
