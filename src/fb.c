@@ -89,22 +89,26 @@ static const uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
 };
 
 struct framebuffer_dev {
-	uint8_t *framebuffer;
+	volatile uint8_t *framebuffer;
 };
 
 struct framebuffer_dev fb_dev;
+struct shifter_mode *current_mode;
 
-__section("fbram") uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
+__section("fbram") volatile uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
 
 void
 fb_init()
 {
 	fb_dev.framebuffer = fbram;
 
-	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD))
+	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD)) {
 		shifter.mode = SHIFTER_MODE_640x200x2;
-	else
+		current_mode = &shifter_modes[SHIFTER_MODE_640x200x2];
+	} else {
 		shifter.mode = SHIFTER_MODE_640x400x1;
+		current_mode = &shifter_modes[SHIFTER_MODE_640x400x1];
+	}
 
 	shifter.addr_hi = ((int)fb_dev.framebuffer >> 16);
 	shifter.addr_md = ((int)fb_dev.framebuffer >> 8);
@@ -129,13 +133,6 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 	const uint8_t font_height = 8;
 	//int screen_width = 320/2; // bytes per line
 
-	const struct shifter_mode *current_mode;
-	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD))
-		current_mode = &shifter_modes[SHIFTER_MODE_640x200x2];
-	else
-		current_mode = &shifter_modes[SHIFTER_MODE_640x400x1];
-		
-	
 	int bit_plane_width = 2;
 	int offset = x >> 1; //  planes
 	int byte_offset = x & 0x1; // mod 4
@@ -160,3 +157,4 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 		fb_dev.framebuffer[index] = mirrored_glyph_line;
 	}
 }
+
