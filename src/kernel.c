@@ -7,6 +7,7 @@
 #include "con.h"
 #include "exception.h"
 #include "mfp.h"
+#include "msgbuf.h"
 
 size_t phystop;
 size_t heapstart;
@@ -16,14 +17,17 @@ size_t heapsize;
 void
 main(void)
 {
-	con_init();
+	heapsize = phystop - heapstart - 0x2000;  /* leave some for stack */
+
+	msgbuf_init();
 
 	printf("redriceOS booting...\n");
-	heapsize = phystop - heapstart - 0x2000;  /* leave some for stack */
-	printf("%u KiB memory installed (heap at 0x%06x, %u KiB available)\n", 
+	printf("%u KiB memory installed (heap at 0x%06x, size %u KiB)\n",
 	    phystop / 1024, heapstart, heapsize / 1024);
 
 	exception_init();
+	con_init();
+
 	mfp_init();
 
 	/* ktest_acia(); */

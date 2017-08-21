@@ -249,3 +249,19 @@ printf(const char *fmt, ...)
 	return n;
 }
 
+extern struct con_dev_def *console;
+/*
+ * A printf variant that avoids logging to the message buffer. Dunno if this
+ * should stay or be removed later. 
+ */
+int
+printf_nobuf(const char *fmt, ...)
+{
+	int n;
+	va_list ap;
+	va_start(ap, fmt);
+	n= doprintf(console->putc, fmt, ap);
+	va_end(ap);
+	return n;
+}
+

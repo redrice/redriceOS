@@ -9,7 +9,10 @@
 #include "acia.h"
 #include "ipl.h"
 #include "mfp.h"
+#include "con.h"
+#include "msgbuf.h"
 
+extern struct con_dev_def con_dev_fbterm;
 
 /* for ktest_data_section */
 uint16_t a = 1;
@@ -116,5 +119,11 @@ ktest_acia()
 
 	printf("status: %x data: %x\n", acia_status_read(&as),
 	    acia_data_read(&as));
+}
+
+void
+ktest_msgbuf_print()
+{
+	msgbuf_print(&con_dev_fbterm);
 }
 

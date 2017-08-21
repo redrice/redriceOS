@@ -6,5 +6,7 @@
 extern int vprintf(const char *, va_list);
 extern int printf(const char *, ...);
 
+extern int printf_nobuf(const char *fmt, ...);
+
 #endif /* _STDIO_H_ */
 
