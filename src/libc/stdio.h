@@ -3,10 +3,10 @@
 
 #include <stdarg.h>
 
-extern int vprintf(const char *, va_list);
-extern int printf(const char *, ...);
+int vprintf(const char *, va_list);
+int printf(const char *, ...);
 
-extern int printf_nobuf(const char *fmt, ...);
+int printf_nobuf(const char *fmt, ...);
 
 #endif /* _STDIO_H_ */
 
