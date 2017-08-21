@@ -5,10 +5,14 @@
 #include "console_font.h"
 #include "mfp.h"
 
-// Shifter info
-
 #define SHIFTER_PALETTE_SIZE 16
 #define SHIFTER_FRAMEBUFFER_SIZE (640*400/8)
+
+enum SHIFTER_MODES {
+	SHIFTER_MODE_320x200x4 = 0,
+	SHIFTER_MODE_640x200x2,
+	SHIFTER_MODE_640x400x1,
+};
 
 struct shifter_regs {
 	uint8_t __padd0;
@@ -30,18 +34,13 @@ struct shifter_regs {
 };
 #define shifter (*(volatile struct shifter_regs *)(SHIFTER_BASE))
 
-enum SHIFTER_MODES {
-	SHIFTER_MODE_320x200x4 = 0,
-	SHIFTER_MODE_640x200x2,
-	SHIFTER_MODE_640x400x1,
-};
-
 struct shifter_mode {
 	uint32_t width;
 	uint32_t height;
 	uint32_t bit_planes;
 	uint32_t stride;
 };
+
 
 static const struct shifter_mode shifter_modes[] = {
 	[SHIFTER_MODE_320x200x4] = {
@@ -88,20 +87,13 @@ static const uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
 	0x777, // white
 };
 
-struct framebuffer_dev {
-	volatile uint8_t *framebuffer;
-};
-
-struct framebuffer_dev fb_dev;
-struct shifter_mode *current_mode;
+const struct shifter_mode *current_mode;
 
 __section("fbram") volatile uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
 
 void
 fb_init()
 {
-	fb_dev.framebuffer = fbram;
-
 	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD)) {
 		shifter.mode = SHIFTER_MODE_640x200x2;
 		current_mode = &shifter_modes[SHIFTER_MODE_640x200x2];
@@ -110,19 +102,18 @@ fb_init()
 		current_mode = &shifter_modes[SHIFTER_MODE_640x400x1];
 	}
 
-	shifter.addr_hi = ((int)fb_dev.framebuffer >> 16);
-	shifter.addr_md = ((int)fb_dev.framebuffer >> 8);
+	shifter.addr_hi = ((uint8_t) ((uint32_t)fbram >> 16));
+	shifter.addr_md = ((uint8_t) ((uint32_t)fbram >> 8));
 
 	for (int i = 0; i < SHIFTER_PALETTE_SIZE; i++) {
 		shifter.colors[i] = framebuffer_palette[i];
 	}
-	
 }
 
 void
 fb_bzero()
 {
-	bzero(fb_dev.framebuffer, SHIFTER_FRAMEBUFFER_SIZE);
+	bzero(fbram, SHIFTER_FRAMEBUFFER_SIZE);
 }
 
 void
@@ -154,7 +145,7 @@ fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
 		mirrored_glyph_line |= ((glyph_line >> 6) & 1) << 1;
 		mirrored_glyph_line |= ((glyph_line >> 7) & 1);
 
-		fb_dev.framebuffer[index] = mirrored_glyph_line;
+		fbram[index] = mirrored_glyph_line;
 	}
 }
 
