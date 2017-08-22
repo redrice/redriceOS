@@ -4,7 +4,7 @@
 
 void msgbuf_init();
 void msgbuf_putc(uint8_t);
-void msgbuf_print(struct con_dev_def *);
+void msgbuf_print(struct con_out_def *);
 
 #endif /* _MSGBUG_H_ */
 

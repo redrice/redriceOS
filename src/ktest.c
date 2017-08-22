@@ -19,7 +19,7 @@ uint16_t a = 1;
 uint8_t b = 2;
 uint16_t c = 3;
 
-struct acia_state as;
+extern struct acia_state as;
 
 void
 ktest_malloc_basic()
@@ -88,22 +88,33 @@ ktest_timera(void)
         mfp_interrupt_stat_print();
 	mfp_timer_stats_print();
 }
+/*
+extern uint8_t keycode;
+extern bool keycode_ready;
 
 __interrupt void
 ktest_irq_handler_acia(void)
 {
-	uint8_t code;
+	//uint8_t code;
 
-	code = acia_data_read(&as);
-	printf("code %x\n", code);
+	//code = acia_data_read(&as);
+	
+	keycode = acia_data_read(&as);
+	keycode_ready = true;
+
+	//printf("code %x\n", code);
         mfp_interrupt_stat_increment(MFP_ST_INT_ACIA);
 }
+
+*/
+/*
+__interrupt void ikbd_irq_handler_console(void);
 
 void
 ktest_acia()
 {
 	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
-	    MFP_ST_INT_ACIA), ktest_irq_handler_acia);
+	    MFP_ST_INT_ACIA), ikbd_irq_handler_console);
 	uint8_t ipl = 3;
 	as.base = ACIA_KBD_BASE;
 	ipl_set(&ipl);
@@ -121,9 +132,11 @@ ktest_acia()
 	    acia_data_read(&as));
 }
 
+
 void
 ktest_msgbuf_print()
 {
 	msgbuf_print(&con_dev_fbterm);
 }
+*/
 

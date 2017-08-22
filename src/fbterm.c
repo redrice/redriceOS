@@ -4,8 +4,8 @@
 
 static struct fbterm_dev fbt;
 
-const struct con_dev_def con_dev_fbterm = {
-	"Framebuffer console", fbterm_putc, fbterm_init
+const struct con_out_def con_out_fbterm = {
+	"fbterm", fbterm_putc, fbterm_init
 };
 
 void

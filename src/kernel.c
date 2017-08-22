@@ -26,13 +26,12 @@ main(void)
 	    phystop / 1024, heapstart, heapsize / 1024);
 
 	exception_init();
-	con_init();
-
 	mfp_init();
 
-	/* ktest_acia(); */
+	con_init();
 
-	while (1) {}
+	while (1) {
+		printf("%c", con_getc());
+	}
 }
 #pragma popwarn
-

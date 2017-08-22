@@ -45,7 +45,6 @@ void
 acia_configure(struct acia_state *as, uint8_t cr)
 {
 	acia_control_write(as, ACIA_CR_RESET);
-	/*printf("writing %x to ACIA CR\n", cr);*/
 	acia_control_write(as, cr);
 }
 

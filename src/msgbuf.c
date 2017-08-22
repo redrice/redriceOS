@@ -49,7 +49,7 @@ msgbuf_putc(uint8_t c)
 }	
 
 void
-msgbuf_print(struct con_dev_def *console)
+msgbuf_print(struct con_out_def *console)
 {
 	char *printpos;
 

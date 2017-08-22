@@ -65,8 +65,8 @@ static struct mfp_timer_state_def mfp_timer_state[] = {
  */
 static uint32_t mfp_int_stats[MFP_INTS];
 
-const struct con_dev_def con_dev_mfp = {
-	"MFP UART console", mfp_serial_write, mfp_serial_console_init
+const struct con_out_def con_out_mfp = {
+	"MFP UART", mfp_serial_write, mfp_serial_console_init
 };
 
 uint8_t
