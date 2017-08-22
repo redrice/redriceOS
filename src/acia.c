@@ -6,12 +6,18 @@
 #include "bus.h"
 #include "mmio.h"
 
+/*
+ * Write to the control register.
+ */
 void
 acia_control_write(struct acia_state *as, uint8_t value)
 {
 	 mmio_write_1((as->base + ACIA_CR), &value);
 }
 
+/*
+ * Read the status register.
+ */
 uint8_t
 acia_status_read(struct acia_state *as)
 {
@@ -22,6 +28,9 @@ acia_status_read(struct acia_state *as)
 	return value;
 }
 
+/*
+ * Read the data register.
+ */
 uint8_t
 acia_data_read(struct acia_state *as)
 {
@@ -32,6 +41,9 @@ acia_data_read(struct acia_state *as)
 	return value;
 }
 
+/*
+ * Write the data register.
+ */
 void
 acia_data_write(struct acia_state *as, uint8_t value)
 {

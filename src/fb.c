@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>
 #include <strings.h>
 
@@ -108,6 +109,10 @@ fb_init()
 	for (int i = 0; i < SHIFTER_PALETTE_SIZE; i++) {
 		shifter.colors[i] = framebuffer_palette[i];
 	}
+
+	printf("fb: framebuffer mode %u x %u, %u bpl\n",
+	    current_mode->width, current_mode->height,
+	    current_mode->bit_planes);
 }
 
 void

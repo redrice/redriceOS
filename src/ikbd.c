@@ -73,15 +73,23 @@ ikbd_init()
 	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
 	    MFP_ST_INT_ACIA), ikbd_irq_handler_console);
 
-	printf("ikbd: controller version %x initialized\n", ikbd_ver);
+	printf("ikbd: controller version %x\n", ikbd_ver);
 }
 
+/*
+ * Returns ASCII character representation of a pressed key. Blocking.
+ *
+ * Or rather, should return, currently returns a raw IKBD key code.
+ */
 uint8_t
 ikbd_getc()
 {
-	/* XXX: readahead */
+	/* XXX: add readahead */
 	while (keycode_ready != true)
-		;;
+		;; /*
+		    * Should it bail out with error, or should it wait
+		    * indefinitely?
+		    */
 
 	keycode_ready = false;
 	return keycode;
