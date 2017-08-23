@@ -8,6 +8,7 @@
 #include "ikbd.h"
 #include "ipl.h"
 #include "mfp.h"
+#include "keymap.h"
 
 const struct con_in_def con_in_ikbd = {
 	"ikbd", ikbd_getc, ikbd_init
@@ -21,6 +22,8 @@ struct acia_state as;
 /* XXX */
 uint8_t keycode;
 uint8_t keycode_ready = false;
+
+extern const uint8_t keymap_ikbd[];
 
 __interrupt void
 ikbd_irq_handler_mcu(void)
@@ -36,14 +39,16 @@ ikbd_irq_handler_console(void)
 {
 	uint8_t r;
 
+	mfp_interrupt_stat_increment(MFP_ST_INT_ACIA);
+
 	r = acia_data_read(&as);
 
-	if (!(r & 0x80)) {
-		keycode = r;
-		keycode_ready = true;
-	}
+	// XXX
+	if (r & 0x80)
+		return;
 
-	mfp_interrupt_stat_increment(MFP_ST_INT_ACIA);
+	keycode = keymap_ikbd[r];
+	keycode_ready = true;
 }
 
 void
