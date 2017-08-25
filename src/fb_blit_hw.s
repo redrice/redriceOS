@@ -1,6 +1,8 @@
 * (c) 1987 Atari Corporation
 *    All Rights Reserved.
 
+	global _fb_blit_hw_start
+
 * BLiTTER BASE ADDRESS
 
 BLiTTER   equ  $FF8A00
@@ -114,6 +116,7 @@ WIDTH     equ  28   ; Width of blt rectangle .w
 HEIGHT    equ  30   ; Height of blt rectangle .w
 PLANES    equ  32   ; Number of planes to blt .w
 
+_fb_blit_hw_start:
 BLiT_iT:
 
      lea  BLiTTER,a5          ; a5-> BLiTTER register block  
