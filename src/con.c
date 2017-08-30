@@ -18,11 +18,11 @@ struct con_in_def *conin = 0;
 void
 con_init()
 {
-	/* conout = &con_out_mfp; */
+	fb_init();
+
+	//conout = &con_out_mfp;
 	conout = &con_out_fbterm;
 	conin = &con_in_ikbd;
-
-	fb_init();
 
 	if (conout != 0) {
 		conout->init();
@@ -36,7 +36,7 @@ con_init()
 	if (conout != 0)
 		printf("output %s ", conout->name);
 	if (conin != 0)
-		printf("intput %s ", conin->name);
+		printf("input %s ", conin->name);
 
 	printf("\n");
 }
