@@ -8,6 +8,9 @@
 #include "hardware_atarist.h"
 #include "acia.h"
 #include "ipl.h"
+#include "fb_blit_hw.h"
+#include "fb.h"
+#include "fbterm.h"
 #include "mfp.h"
 #include "con.h"
 #include "msgbuf.h"
@@ -139,4 +142,51 @@ ktest_msgbuf_print()
 	msgbuf_print(&con_dev_fbterm);
 }
 */
+
+/*extern const char font8x8_basic[128][8];
+extern __section("fbram") volatile uint8_t fbram[32000];
+
+void
+ktest_blit()
+{
+	struct fb_blit_hw_param_def b;
+	uint8_t *fb;
+	
+	fb = fbram;
+
+	b.src_form = font8x8_basic[51];
+//	b.src_form = fb;
+	b.src_nxln = 0x40;
+	b.src_nxpl = 1;
+//	b.src_xmin = 0x8;
+//	b.src_ymin = 0x8;
+
+	b.dst_form = fb + 1000;
+	b.dst_nxln = 0x100;
+	b.dst_nxpl = 1;
+//	b.dst_xmin = 10;
+//	b.dst_ymin = 10;
+
+	b.width = 50;
+	b.height = 50;
+	b.planes = 1;
+
+	printf("blitting from %p to %p\n", b.src_form, b.dst_form);
+
+
+	fb_blit_hw_start(&b);
+}
+*/
+
+void
+ktest_fbterm()
+{	
+	fbterm_init();
+	fbterm_putc('O');
+	
+	fbterm_putc('b');
+	fbterm_putc('\n');
+	fbterm_putc('c');
+
+}
 

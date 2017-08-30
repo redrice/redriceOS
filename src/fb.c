@@ -3,47 +3,13 @@
 #include <strings.h>
 
 #include "hardware_atarist.h"
-#include "console_font.h"
 #include "mfp.h"
+#include "mmio.h"
+#include "fb.h"
 
-#define SHIFTER_PALETTE_SIZE 16
 #define SHIFTER_FRAMEBUFFER_SIZE (640*400/8)
 
-enum SHIFTER_MODES {
-	SHIFTER_MODE_320x200x4 = 0,
-	SHIFTER_MODE_640x200x2,
-	SHIFTER_MODE_640x400x1,
-};
-
-struct shifter_regs {
-	uint8_t __padd0;
-	uint8_t addr_hi;
-	uint8_t __padd1;
-	uint8_t addr_md;
-	uint8_t __padd2;
-	uint8_t counter_hi;
-	uint8_t __padd3;
-	uint8_t counter_md;
-	uint8_t __padd4;
-	uint8_t counter_lo;
-	int16_t sync;
-	uint8_t __padd5;
-	uint8_t addr_lo;
-	uint8_t __padd6[2+3*16];
-	uint16_t colors[SHIFTER_PALETTE_SIZE];
-	uint8_t mode;
-};
-#define shifter (*(volatile struct shifter_regs *)(SHIFTER_BASE))
-
-struct shifter_mode {
-	uint32_t width;
-	uint32_t height;
-	uint32_t bit_planes;
-	uint32_t stride;
-};
-
-
-static const struct shifter_mode shifter_modes[] = {
+static const struct shifter_mode_def shifter_modes[] = {
 	[SHIFTER_MODE_320x200x4] = {
 		.width = 320,
 		.height = 200,
@@ -64,51 +30,34 @@ static const struct shifter_mode shifter_modes[] = {
 	}
 };
 
-
-// Framebuffer info
-
-static const uint16_t framebuffer_palette[SHIFTER_PALETTE_SIZE] = {
-	0x000, // black
-	0x777, // white - only for debugging
-	//0x400, // red
-	0x040, // green
-	0x420, // brown
-	0x004, // blue
-	0x404, // magenta
-	0x044, // cyan
-	0x444, // gray
-
-	0x222, // dark gray
-	0x722, // red
-	0x272, // green
-	0x772, // yellow
-	0x227, // blue
-	0x727, // magenta
-	0x277, // cyan
-	0x777, // white
-};
-
-const struct shifter_mode *current_mode;
+const struct shifter_mode_def *current_mode;
 
 __section("fbram") volatile uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
 
 void
+fb_register_write_1(uint8_t offset, uint8_t value) 
+{
+	mmio_write_1(SHIFTER_BASE + offset, &value);
+}
+
+void
 fb_init()
 {
-	if(BITV(mfp_register_read(MFP_GPDR), MFP_GPIO_MMD)) {
-		shifter.mode = SHIFTER_MODE_640x200x2;
-		current_mode = &shifter_modes[SHIFTER_MODE_640x200x2];
+	if(mfp_register_read(MFP_GPDR) & MFP_GPIO_MMD)  {
+		/* not really supported at the moment */
+		fb_register_write_1(SHIFTER_MODE, SHIFTER_MODE_640x200x2);
+		current_mode = &(shifter_modes[SHIFTER_MODE_640x200x2]);
 	} else {
-		shifter.mode = SHIFTER_MODE_640x400x1;
-		current_mode = &shifter_modes[SHIFTER_MODE_640x400x1];
+		fb_register_write_1(SHIFTER_MODE, SHIFTER_MODE_640x400x1);
+		current_mode = &(shifter_modes[SHIFTER_MODE_640x400x1]);
 	}
 
-	shifter.addr_hi = ((uint8_t) ((uint32_t)fbram >> 16));
-	shifter.addr_md = ((uint8_t) ((uint32_t)fbram >> 8));
+	fb_register_write_1(SHIFTER_ADDRESS_HI, ((uint8_t) ((uint32_t)fbram >> 16)));
+	fb_register_write_1(SHIFTER_ADDRESS_MD, ((uint8_t) ((uint32_t)fbram >> 8)));
 
-	for (int i = 0; i < SHIFTER_PALETTE_SIZE; i++) {
-		shifter.colors[i] = framebuffer_palette[i];
-	}
+//	for (int i = 0; i < SHIFTER_PALETTE_SIZE; i++) {
+//		shifter.colors[i] = framebuffer_palette[i];
+//	}
 
 	printf("fb: framebuffer mode %u x %u, %u bpl\n",
 	    current_mode->width, current_mode->height,
@@ -121,36 +70,41 @@ fb_bzero()
 	bzero(fbram, SHIFTER_FRAMEBUFFER_SIZE);
 }
 
-void
-fb_putc(const uint8_t c, const uint16_t x, const uint16_t y)
+const struct shifter_mode_def *
+fb_mode_get()
 {
-	/* TODO: write a blitter */
-	const uint8_t *glyph = font8x8_basic[c];
-	const uint8_t font_height = 8;
-	//int screen_width = 320/2; // bytes per line
+	return current_mode;
+}
 
-	int bit_plane_width = 2;
-	int offset = x >> 1; //  planes
-	int byte_offset = x & 0x1; // mod 4
+void
+fb_blit_sprite_1bpl(const uint8_t *charp, const uint16_t len, const uint16_t x, const uint16_t y, const uint16_t rx, const uint16_t ry)
+{
+	uint16_t i, cur_rx, cur_ry;
+	uint16_t off, off_x, off_y;
 
-	int offset_x = offset * (current_mode->bit_planes) * bit_plane_width;
+	i = 0;
 
-	/* TODO: reduce the amount of calculations */
-	for (int i = 0; i < font_height; i++) {
-		uint8_t glyph_line = glyph[i];
-		uint32_t index = (i + y * font_height) * current_mode->stride + offset_x + byte_offset;
-		uint8_t mirrored_glyph_line = 0;
+	cur_rx = 0;
+	cur_ry = 0;
 
-		mirrored_glyph_line |= ((glyph_line & 1) << 7);
-		mirrored_glyph_line |= ((glyph_line >> 1) & 1) << 6;
-		mirrored_glyph_line |= ((glyph_line >> 2) & 1) << 5;
-		mirrored_glyph_line |= ((glyph_line >> 3) & 1) << 4;
-		mirrored_glyph_line |= ((glyph_line >> 4) & 1) << 3;
-		mirrored_glyph_line |= ((glyph_line >> 5) & 1) << 2;
-		mirrored_glyph_line |= ((glyph_line >> 6) & 1) << 1;
-		mirrored_glyph_line |= ((glyph_line >> 7) & 1);
+	while (i < len) {
 
-		fbram[index] = mirrored_glyph_line;
+		if (cur_rx >= rx) {
+			cur_rx = 0;
+			cur_ry++;
+		}
+
+		/* there are 8 pixels in one byte */
+		off_x = (x / 8) + (cur_rx / 8);
+		off_y = (y + cur_ry) * current_mode->stride;
+		off = off_y + off_x;
+
+		/*printf("writing %p to %p\n", &charp[i], &fbram[off]);*/
+		fbram[off] = charp[i];
+
+		cur_rx+=8;
+
+		i++;
 	}
 }
 
