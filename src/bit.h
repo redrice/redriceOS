@@ -8,7 +8,7 @@
 #define BIT(_x) (1UL << (_x))
 
 /* extract bit from field _x, from value _y */
-#define BITV(_y,_x) ((_y & BIT(_x)) >> (_x))
+//#define BITV(_y,_x) ((_y & BIT(_x)) >> (_x)) /// XXX
 
 /* get bits _x through _y, _x < _y */
 #define BITS(_x,_y) ((BIT(MAX((_x), (_y)) + 1) - 1) ^ (BIT(MIN((_x), (_y))) - 1))
