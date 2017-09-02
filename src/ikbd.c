@@ -14,14 +14,11 @@ const struct con_in_def con_in_ikbd = {
 	"ikbd", ikbd_getc, ikbd_init
 };
 
-//const uint8_t ikbd_codes = {
-//};
-
 struct acia_state as;
 
 /* XXX */
-uint8_t keycode;
-uint8_t keycode_ready = false;
+volatile uint8_t keycode;
+volatile uint8_t keycode_ready = false;
 
 extern const uint8_t keymap_ikbd[];
 
