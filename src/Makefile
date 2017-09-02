@@ -2,7 +2,7 @@ AS=vasmm68k_mot
 CC=vc
 LD=vlink
 AWK=awk
-CFLAGS=+redriceos -c99 -Ilibc/ -I. -cpu=68000
+CFLAGS=+redriceos -c99 -Ilibc/ -I. -cpu=68000 -O3
 ASFLAGS=-Fvobj -m68000 -quiet
 LDSCRIPT=cart_atarist.ld
 LDFLAGS=-brawbin1 -T $(LDSCRIPT)# -M
