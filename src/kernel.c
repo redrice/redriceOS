@@ -8,6 +8,7 @@
 #include "exception.h"
 #include "mfp.h"
 #include "msgbuf.h"
+#include "ipl.h"
 
 size_t phystop;
 size_t heapstart;
@@ -28,7 +29,10 @@ main(void)
 	exception_init();
 	mfp_init();
 
+        ipl_set(3);
+
 	con_init();
+
 
 	while (1) {
 		printf("%c", con_getc());

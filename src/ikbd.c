@@ -58,8 +58,6 @@ ikbd_init()
 	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
 	    MFP_ST_INT_ACIA), ikbd_irq_handler_mcu);
 
-	ipl_set(3);
-
 	acia_configure(&as, ACIA_CR_DIV_64 | (ACIA_CR_WORDSEL_8B_1SB << ACIA_CR_WORDSEL_SHIFT) | ACIA_CR_RECVIRQ);
 
 	mfp_interrupt_enable(MFP_ST_INT_ACIA);

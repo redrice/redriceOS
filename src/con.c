@@ -10,6 +10,7 @@
 
 extern struct con_out_def con_out_mfp;
 extern struct con_out_def con_out_fbterm;
+extern struct con_in_def con_in_mfp;
 extern struct con_in_def con_in_ikbd;
 
 struct con_out_def *conout = 0;
@@ -23,6 +24,7 @@ con_init()
 	//conout = &con_out_mfp;
 	conout = &con_out_fbterm;
 	conin = &con_in_ikbd;
+	//conin = &con_in_mfp;
 
 	if (conout != 0) {
 		conout->init();

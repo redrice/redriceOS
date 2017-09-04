@@ -65,8 +65,15 @@ static struct mfp_timer_state_def mfp_timer_state[] = {
  */
 static uint32_t mfp_int_stats[MFP_INTS];
 
+static bool mfp_serial_console_inited = false;
+static volatile bool mfp_serial_rx_ready = false;
+
 const struct con_out_def con_out_mfp = {
-	"MFP UART", mfp_serial_write, mfp_serial_console_init
+	"MFP UART TX", mfp_serial_write, mfp_serial_console_init
+};
+
+const struct con_in_def con_in_mfp = {
+	"MFP UART RX", mfp_serial_read, mfp_serial_console_init_rx
 };
 
 uint8_t
@@ -274,15 +281,37 @@ mfp_timer_stats_print()
 }
 
 /*
- * Write a single character to the serial port.
+ * Write a single byte to the serial port.
  */
 void
 mfp_serial_write(uint8_t c)
 {
 	while(!(mfp_register_read(MFP_TSR) & MFP_TSR_BE))
-		;;	// XXX: bail out after some time with err
+		;;	// XXX: bail out after some time with err?
 
 	mfp_register_write(MFP_UDR, c);
+}
+
+/* XXX: is this any good way...? */
+__interrupt void
+mfp_irq_serial_rx(void)
+{
+	mfp_interrupt_stat_increment(MFP_ST_INT_RCV_BUFFULL);
+
+	mfp_serial_rx_ready = true;
+}
+
+/*
+ * Read a single byte from the serial port.
+ * XXX: buffer?
+ */
+uint8_t
+mfp_serial_read()
+{
+	while(!mfp_serial_rx_ready)
+		;;
+
+	return mfp_register_read(MFP_UDR);
 }
 
 /*
@@ -332,8 +361,21 @@ mfp_serial_init(uint32_t baud, uint8_t mode, uint8_t parity)
 }
 
 void
+mfp_serial_console_init_rx(void)
+{
+	mfp_serial_console_init();
+
+	exception_handler_install(exception_vec_to_off(MFP_ST_VECTOR +
+	    MFP_ST_INT_RCV_BUFFULL), mfp_irq_serial_rx);
+	mfp_interrupt_enable(MFP_ST_INT_RCV_BUFFULL);
+}
+
+void
 mfp_serial_console_init(void)
 {
-        mfp_serial_init(BAUD_19200, ASYNC_STOP1_START1, PARITY_NONE);
+	if (!mfp_serial_console_inited) {
+	        mfp_serial_init(BAUD_19200, ASYNC_STOP1_START1, PARITY_NONE);
+		mfp_serial_console_inited = true;
+	}
 }
 
