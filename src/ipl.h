@@ -7,8 +7,8 @@
 #define IPL_VBL 4
 #define IPL_MFP 6
 
-void ipl_get(__reg("a0") uint8_t *);
-void ipl_set(__reg("a0") uint8_t *);
+__reg("d0") uint8_t ipl_get();
+void ipl_set(__reg("d0") uint8_t);
 
 #endif /* _IPL_H_ */
 

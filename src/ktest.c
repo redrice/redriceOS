@@ -69,8 +69,7 @@ ktest_irq_handler_timera(void)
 void
 ktest_timera(void)
 {
-	uint8_t ipl = 3;
-	ipl_set(&ipl);
+	ipl_set(3);
 
 	mfp_init();
 	mfp_interrupt_enable(MFP_ST_INT_TIMERC);
