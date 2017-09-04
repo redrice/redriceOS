@@ -12,7 +12,7 @@
 void
 acia_control_write(struct acia_state *as, uint8_t value)
 {
-	 mmio_write_1((as->base + ACIA_CR), &value);
+	 mmio_write_1((as->base + ACIA_CR), value);
 }
 
 /*
@@ -23,7 +23,7 @@ acia_status_read(struct acia_state *as)
 {
 	uint8_t value;
 
-	mmio_read_1(as->base + ACIA_SR, &value);
+	value = mmio_read_1(as->base + ACIA_SR);
 
 	return value;
 }
@@ -36,7 +36,7 @@ acia_data_read(struct acia_state *as)
 {
 	uint8_t value;
 
-	mmio_read_1(as->base + ACIA_RXD, &value);
+	value = mmio_read_1(as->base + ACIA_RXD);
 
 	return value;
 }
@@ -50,7 +50,7 @@ acia_data_write(struct acia_state *as, uint8_t value)
 	while (acia_status_read(as) ^ ACIA_SR_TDRE)
 		;;
 
-	mmio_write_1(as->base + ACIA_TXD, &value);
+	mmio_write_1(as->base + ACIA_TXD, value);
 }
 
 void

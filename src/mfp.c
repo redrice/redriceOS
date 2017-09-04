@@ -81,7 +81,7 @@ mfp_register_read(uint8_t offset)
 {
 	uint8_t value;
 
-	mmio_read_1((MFP_BASE + offset), &value);
+	value = mmio_read_1(MFP_BASE + offset);
 
 	return value;
 }
@@ -89,7 +89,7 @@ mfp_register_read(uint8_t offset)
 void
 mfp_register_write(uint8_t offset, uint8_t value)
 {
-	mmio_write_1(MFP_BASE + offset, &value);
+	mmio_write_1(MFP_BASE + offset, value);
 }
 
 void

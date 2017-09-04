@@ -5,11 +5,11 @@
 	global _mmio_unset_1
 
 _mmio_read_1:
-	move.b		(a0),(a1)
+	move.b		(a0),d0
 	rts
 
 _mmio_write_1:
-	move.b		(a1),(a0)
+	move.b		d0,(a0)
 	rts
 
 _mmio_set_1:
@@ -29,3 +29,4 @@ _mmio_unset_1:
 ;	rts
 ; ...
 
+; vim: set ft=asm68k:

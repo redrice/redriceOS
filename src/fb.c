@@ -37,7 +37,7 @@ __section("fbram") volatile uint8_t fbram[SHIFTER_FRAMEBUFFER_SIZE];
 void
 fb_register_write_1(uint8_t offset, uint8_t value) 
 {
-	mmio_write_1(SHIFTER_BASE + offset, &value);
+	mmio_write_1(SHIFTER_BASE + offset, value);
 }
 
 void
