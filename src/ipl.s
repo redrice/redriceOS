@@ -7,7 +7,6 @@ _ipl_get:
 	move		sr,d0		; load SR into D0
 	and		#$0F00,d0	; mask out other bits than IPL
 	asr		#8,d0		; shift right to make 8-bit value
-;	move.b		d0,(a0)		; save into variable pointed by A0
 	rts
 
 ; ipl_set: d0 - new ipl level
