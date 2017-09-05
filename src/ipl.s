@@ -19,3 +19,4 @@ _ipl_set:
 	move		d0,sr		; load D0 into SR
 	rts
 
+; vim: set ft=asm68k:
