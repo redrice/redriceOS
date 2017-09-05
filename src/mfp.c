@@ -337,6 +337,11 @@ mfp_serial_init(uint32_t baud, uint8_t mode, uint8_t parity)
 {
 	uint8_t ucr;
 
+	if (mfp_serial_console_inited) {
+		printf("mfpser: Aborting init, serial is used as console\n");
+		return false;
+	}
+
 	ucr = MFP_UCR_CLK;
 
 	if (mode == ASYNC_STOP1_START1)
