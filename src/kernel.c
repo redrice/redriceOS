@@ -9,6 +9,7 @@
 #include "mfp.h"
 #include "msgbuf.h"
 #include "ipl.h"
+#include "systimer.h"
 
 size_t phystop;
 size_t heapstart;
@@ -33,6 +34,7 @@ main(void)
 
 	con_init();
 
+	systimer_init();
 
 	while (1) {
 		printf("%c", con_getc());

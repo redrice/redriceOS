@@ -264,6 +264,7 @@ void mfp_interrupt_stat_print();
 void mfp_interrupt_stat_increment(uint8_t);
 void mfp_timer_setup(uint8_t, uint8_t, uint8_t);
 void mfp_timer_stop(uint8_t);
+uint32_t mfp_timer_frequency(uint8_t);
 void mfp_timer_stats_print();
 void mfp_timer_handler_set(uint8_t, void(*)(void));
 void mfp_serial_console_init(void);

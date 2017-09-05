@@ -247,7 +247,7 @@ mfp_timer_handler_set(uint8_t timerid, void(*handler)(void))
  * Get the timer frequency in Hz, this only works for timers configured in
  * delay mode.
  */
-static uint32_t
+uint32_t
 mfp_timer_frequency(uint8_t timerid)
 {
 	uint32_t f;
