@@ -42,12 +42,31 @@ static const uint8_t mfp_timer_delay_divs[] =
 	{ 0, 4, 10, 16, 50, 64, 100, 200 };
 
 static const struct mfp_ser_baud_cfg_def mfp_ser_baud_cfg[] = {
-	{ MFP_TCR_DELAY_P4, 16 },
-	{ MFP_TCR_DELAY_P4, 8 },
-	{ MFP_TCR_DELAY_P4, 4 },
-	{ 0, 0 },	/* unsupported on MFP */
-	{ MFP_TCR_DELAY_P4, 2 },
-	{ MFP_TCR_DELAY_P4, 1 }
+	{ 0, 0, 0 },
+	{ 1200, MFP_TCR_DELAY_P4, 16 },
+	{ 2400, MFP_TCR_DELAY_P4, 8 },
+	{ 4800, MFP_TCR_DELAY_P4, 4 },
+	{ 9600, 0, 0 },	/* unsupported on MFP */
+	{ 14400, MFP_TCR_DELAY_P4, 2 },
+	{ 19200, MFP_TCR_DELAY_P4, 1 }
+};
+
+const char* mfp_ser_parity_str[] = {
+	"none",
+	"even",
+	"odd"
+};
+
+const char* mfp_ser_mode_str[] = {
+	"async stop 1 start 1"
+};
+
+const struct con_out_def con_out_mfp = {
+	"MFP UART TX", mfp_serial_write, mfp_serial_console_init
+};
+
+const struct con_in_def con_in_mfp = {
+	"MFP UART RX", mfp_serial_read, mfp_serial_console_init_rx
 };
 
 /*
@@ -65,16 +84,12 @@ static struct mfp_timer_state_def mfp_timer_state[] = {
  */
 static uint32_t mfp_int_stats[MFP_INTS];
 
+static uint8_t mfp_serial_baud = 0; /* currently configured baud ID */
+static uint8_t mfp_serial_parity = 0;
+static uint8_t mfp_serial_mode = 0;
+
 static bool mfp_serial_console_inited = false;
 static volatile bool mfp_serial_rx_ready = false;
-
-const struct con_out_def con_out_mfp = {
-	"MFP UART TX", mfp_serial_write, mfp_serial_console_init
-};
-
-const struct con_in_def con_in_mfp = {
-	"MFP UART RX", mfp_serial_read, mfp_serial_console_init_rx
-};
 
 uint8_t
 mfp_register_read(uint8_t offset)
@@ -353,11 +368,31 @@ mfp_serial_init(uint32_t baud, uint8_t mode, uint8_t parity)
 		return false;
 	}
 
+	mfp_serial_baud = baud;
+	mfp_serial_parity = parity;
+	mfp_serial_mode = mode;
+
 	mfp_timer_setup(MFP_TIMERD, MFP_TCR_DELAY_P4, 1);
 
 	mfp_register_set(MFP_TSR, MFP_TSR_TE);
 
+	mfp_serial_config_print();
+
 	return true;
+}
+
+void
+mfp_serial_config_print(void)
+{
+	uint16_t br;
+	const char *parity, *mode;
+
+	br = mfp_ser_baud_cfg[mfp_serial_baud].baud;
+	parity = mfp_ser_parity_str[mfp_serial_parity];
+	mode = mfp_ser_mode_str[mfp_serial_mode];
+
+	printf("mfpser: mode %s baud %u parity %s\n", mode, br, parity);
+
 }
 
 void

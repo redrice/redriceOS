@@ -247,6 +247,7 @@ struct mfp_timer_state_def {
 };
 
 struct mfp_ser_baud_cfg_def {
+	uint16_t baud;
 	uint8_t tcr;
 	uint8_t tdr;
 };
@@ -269,6 +270,7 @@ void mfp_serial_console_init(void);
 void mfp_serial_console_init_rx(void);
 void mfp_serial_write(uint8_t);
 uint8_t mfp_serial_read();
+void mfp_serial_config_print();
 bool mfp_serial_init(uint32_t, uint8_t, uint8_t);
 
 #endif /* _MFP_H_ */
