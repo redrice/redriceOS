@@ -29,7 +29,7 @@ fbterm_init(void)
 
 	fb_bzero();
 
-	/*printf("fbterm: %u x %u terminal\n", fbt.maxtx, fbt.maxty);*/
+	printf("fbterm: %u x %u characters terminal\n", fbt.maxtx, fbt.maxty);
 }
 
 
