@@ -64,6 +64,9 @@ fb_init()
 	    current_mode->bit_planes);
 }
 
+/*
+ * Clear the screen by filling it with 0 bytes.
+ */
 void
 fb_bzero()
 {
@@ -76,6 +79,22 @@ fb_mode_get()
 	return current_mode;
 }
 
+/*
+ * Simplified blitting routine:
+ * Blit 1-bitplane sprite onto 1-bitplane screen (fbram).
+ *
+ * charp - pointer to memory holding the sprite data
+ * len - size of sprite in bytes
+ * x - horizontal position of upper left corner of sprite rectangle on screen
+ * y - vertical position of upper left corener of sprite rectangle on screen
+ * rx - width of sprite rectangle
+ * ry - width of sprite rectangle
+ *
+ * Considering that this routine is copying whole bytes, it can only work on
+ * sprites that have size value multiple of 8 pixels (e.g. 8x8, 8x16, 16x16...).
+ * Destination values also have to be rounded to 8 pixels. Sprites larger than
+ * 8x8 are not actually tested yet.
+ */
 void
 fb_blit_sprite_1bpl(const uint8_t *charp, const uint16_t len, const uint16_t x, const uint16_t y, const uint16_t rx, const uint16_t ry)
 {
