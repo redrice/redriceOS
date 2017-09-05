@@ -19,20 +19,28 @@ struct con_in_def *conin = 0;
 void
 con_init()
 {
+	struct con_out_def *tmpconout;
+	struct con_in_def *tmpconin;
+
+
+	tmpconout = &con_out_mfp;
+	//tmpconout = &con_out_fbterm;
+	tmpconin = &con_in_ikbd;
+	//tmpconin = &con_in_mfp;
+
 	fb_init();
 
-	//conout = &con_out_mfp;
-	conout = &con_out_fbterm;
-	conin = &con_in_ikbd;
-	//conin = &con_in_mfp;
+	if (tmpconout != 0)
+		tmpconout->init();
 
-	if (conout != 0) {
-		conout->init();
+	if (tmpconin != 0)
+		tmpconin->init();
+
+	conout = tmpconout;
+	conin = tmpconin;
+
+	if (conout != 0)
 		msgbuf_print(conout);
-	}
-
-	if (conin != 0)
-		conin->init();
 
 	printf("console: ");
 	if (conout != 0)
