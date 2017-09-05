@@ -83,7 +83,7 @@ fb_mode_get()
  * Simplified blitting routine:
  * Blit 1-bitplane sprite onto 1-bitplane screen (fbram).
  *
- * charp - pointer to memory holding the sprite data
+ * src - pointer to memory holding the sprite data
  * len - size of sprite in bytes
  * x - horizontal position of upper left corner of sprite rectangle on screen
  * y - vertical position of upper left corener of sprite rectangle on screen
@@ -96,15 +96,12 @@ fb_mode_get()
  * 8x8 are not actually tested yet.
  */
 void
-fb_blit_sprite_1bpl(const uint8_t *charp, const uint16_t len, const uint16_t x, const uint16_t y, const uint16_t rx, const uint16_t ry)
+fb_blit_sprite_1bpl(const uint8_t *src, const uint16_t len, const uint16_t x, const uint16_t y, const uint16_t rx, const uint16_t ry)
 {
 	uint16_t i, cur_rx, cur_ry;
 	uint16_t off, off_x, off_y;
 
-	i = 0;
-
-	cur_rx = 0;
-	cur_ry = 0;
+	i = 0; cur_rx = 0; cur_ry = 0;
 
 	while (i < len) {
 
@@ -118,11 +115,10 @@ fb_blit_sprite_1bpl(const uint8_t *charp, const uint16_t len, const uint16_t x, 
 		off_y = (y + cur_ry) * current_mode->stride;
 		off = off_y + off_x;
 
-		/*printf("writing %p to %p\n", &charp[i], &fbram[off]);*/
-		fbram[off] = charp[i];
+		/*printf("writing %p to %p\n", &src[i], &fbram[off]);*/
+		fbram[off] = src[i];
 
 		cur_rx+=8;
-
 		i++;
 	}
 }
