@@ -16,7 +16,7 @@ systimer_init(void)
 {
 	mfp_timer_handler_set(MFP_TIMERA, systimer_tick);
 
-	mfp_timer_setup(MFP_TIMERA, MFP_TCR_DELAY_P64, 191);
+	mfp_timer_setup(MFP_TIMERA, MFP_TCR_DELAY_P100, 245);
 
 	mfp_interrupt_enable(MFP_ST_INT_TIMERA);
 
