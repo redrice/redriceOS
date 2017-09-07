@@ -17,8 +17,11 @@ const struct con_in_def con_in_ikbd = {
 struct acia_state as;
 
 /* XXX */
-volatile uint8_t keycode;
-volatile uint8_t keycode_ready = false;
+static volatile uint8_t keycode;
+static volatile uint8_t keycode_ready = false;
+
+static bool shift_active = false;
+static bool alt_active = false;
 
 extern const uint8_t keymap_ikbd[];
 
@@ -34,17 +37,40 @@ ikbd_irq_handler_mcu(void)
 __interrupt void
 ikbd_irq_handler_console(void)
 {
-	uint8_t r;
+	uint8_t r, c;
 
 	mfp_interrupt_stat_increment(MFP_ST_INT_ACIA);
 
 	r = acia_data_read(&as);
 
+	if ((r == IKBD_LSHIFT) || (r == IKBD_RSHIFT)) {
+		shift_active = true;
+		return;
+	}
+	if (r == (IKBD_LSHIFT + IKBD_RELEASE) ||
+	    (r == (IKBD_RSHIFT + IKBD_RELEASE))) {
+		shift_active = false;
+		return;
+	}
+
+	if (r == (IKBD_ALT)) {
+		alt_active = true;
+		return;
+	}
+	if (r == (IKBD_ALT + IKBD_RELEASE)) {
+		alt_active = false;
+		return;
+	}
+
+
+	/* Get machine independent key code from keymap. */
+	c = keymap_ikbd[r];
+
 	// XXX
 	if (r & 0x80)
 		return;
 
-	keycode = keymap_ikbd[r];
+	keycode = c;
 	keycode_ready = true;
 }
 
