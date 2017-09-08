@@ -546,7 +546,7 @@ void *umm_realloc( void *ptr, size_t size ) {
      * only the original bytes.
      */
 
-    //memmove( (void *)&UMM_DATA(c), ptr, curSize );
+    memmove( (void *)&UMM_DATA(c), ptr, curSize );
 
     /* And don't forget to adjust the pointer to the new block location! */
 
