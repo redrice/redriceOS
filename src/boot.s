@@ -3,15 +3,11 @@
 	xref		bss_clear
 	xref		data_to_ram
 	global		memory_configured
+	global		boot_common
 
-CARTMAGIC equ $fa52235f
+	code
 
-	section		"boot",code
-
-entry_rom:
-	; ID used by TOS to jump early into code on cartridge.
-	dc.l		CARTMAGIC
-
+boot_common:
 	; Theoretically CPU should be in supervisor mode now, but 
 	; someone could have performed "warm" reboot by jumping into
 	; this location.
@@ -32,12 +28,6 @@ memory_configured:
 	move.l		#__heap,_heapstart ; save heap start address
 
 	jsr		_main		; jump into C kernel code
-
-	; This section is used to mark end of ROM. Linker automatically fills
-	; empty space in ROM with zeros.
-	section		"romend",code
-
-	dc.w		$55AA
 
 ; vim: set ft=asm68k:
 
