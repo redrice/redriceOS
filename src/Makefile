@@ -13,7 +13,7 @@ HW_C_INC=$(HW_DESCR).h
 
 OBJS_ROM=boot_rom.o
 OBJS_CART=boot_cart.o
-OBJS=acia.o boot.o kernel.o con.o exception.o exception_asm.o fb.o fbterm.o fb_blit_hw.o ikbd.o ipl.o irq.o keymap_ikbd.o ktest.o memory.o mfp.o mmio.o msgbuf.o systimer.o libc/atoi.o libc/printf.o libc/divmod.o libc/string.o libc/strings_asm.o umm_malloc/umm_malloc.o
+OBJS=acia.o boot.o kernel.o con.o exception.o exception_asm.o fb.o fbterm.o fb_blit_hw.o ikbd.o ipl.o irq.o keymap_ikbd.o ktest.o logo.o memory.o mfp.o mmio.o msgbuf.o systimer.o libc/atoi.o libc/printf.o libc/divmod.o libc/string.o libc/strings_asm.o umm_malloc/umm_malloc.o
 ROM_IMAGE=redriceos-rom.img
 CART_IMAGE=redriceos-cart.img
 

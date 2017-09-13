@@ -37,6 +37,7 @@ void
 msgbuf_init()
 {
 	msgbuf = malloc(MSGBUF_SIZE);	
+	bzero(msgbuf, MSGBUF_SIZE);
 }
 
 void

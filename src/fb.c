@@ -9,6 +9,8 @@
 
 #define SHIFTER_FRAMEBUFFER_SIZE (640*400/8)
 
+extern const uint8_t logo_data[];
+
 static const struct shifter_mode_def shifter_modes[] = {
 	[SHIFTER_MODE_320x200x4] = {
 		.width = 320,
@@ -62,6 +64,12 @@ fb_init()
 	printf("fb: framebuffer mode %u x %u, %u bpl\n",
 	    current_mode->width, current_mode->height,
 	    current_mode->bit_planes);
+
+	/* clear the screen */
+        fb_bzero();
+
+	/* draw the logo at upper right corner of the screen */
+	fb_blit_sprite_1bpl(logo_data, (64*64)/8, 576, 0, 64, 64);
 }
 
 /*

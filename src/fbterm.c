@@ -27,8 +27,6 @@ fbterm_init(void)
 	fbt.maxtx = fbt.mode->width / font_char_width;
 	fbt.maxty = fbt.mode->height / font_char_height;
 
-	fb_bzero();
-
 	printf("fbterm: %u x %u characters terminal\n", fbt.maxtx, fbt.maxty);
 }
 
