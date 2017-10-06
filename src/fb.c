@@ -100,8 +100,7 @@ fb_mode_get()
  *
  * Considering that this routine is copying whole bytes, it can only work on
  * sprites that have size value multiple of 8 pixels (e.g. 8x8, 8x16, 16x16...).
- * Destination values also have to be rounded to 8 pixels. Sprites larger than
- * 8x8 are not actually tested yet.
+ * Destination values also have to be aligned to 8 pixels.
  */
 void
 fb_blit_sprite_1bpl(const uint8_t *src, const uint16_t len, const uint16_t x, const uint16_t y, const uint16_t rx, const uint16_t ry)
