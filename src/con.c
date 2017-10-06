@@ -23,10 +23,10 @@ con_init()
 	struct con_in_def *tmpconin;
 
 
-	tmpconout = &con_out_mfp;
-	//tmpconout = &con_out_fbterm;
-	tmpconin = &con_in_ikbd;
+	//tmpconout = &con_out_mfp;
 	//tmpconin = &con_in_mfp;
+	tmpconout = &con_out_fbterm;
+	tmpconin = &con_in_ikbd;
 
 	fb_init();
 
