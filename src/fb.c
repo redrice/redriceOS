@@ -57,9 +57,7 @@ fb_init()
 	fb_register_write_1(SHIFTER_ADDRESS_HI, ((uint8_t) ((uint32_t)fbram >> 16)));
 	fb_register_write_1(SHIFTER_ADDRESS_MD, ((uint8_t) ((uint32_t)fbram >> 8)));
 
-//	for (int i = 0; i < SHIFTER_PALETTE_SIZE; i++) {
-//		shifter.colors[i] = framebuffer_palette[i];
-//	}
+	fb_register_write_1(SHIFTER_PALETTE, 0x10);
 
 	printf("fb: framebuffer mode %u x %u, %u bpl\n",
 	    current_mode->width, current_mode->height,
